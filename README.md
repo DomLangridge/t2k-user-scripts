@@ -1,1 +1,5 @@
-A repository for me to keep the various scripts and things that I tend to use
+# t2k-user-scripts
+
+A repository for me to keep the various scripts and things that I tend to use:
+
+`mach3_t2k/slurm_scripts` - Slurm job submission scripts for MaCh3 T2K
