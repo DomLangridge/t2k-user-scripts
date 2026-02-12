@@ -37,6 +37,9 @@ cd ${DL_SFT}/OAGenWeightsApps
 if [ -d "$DL_SFT/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}" ]; then
   echo "NOTE: OAGenWeightsApps directory 'OAGenWeightsApps_${OAGenWeightsApps_${OAGW_BRANCH_NAME}}' already exists - will not clone"
 else
+  echo "========================================"
+  echo "Cloning OAGenWeightsApps"
+  echo "========================================"
   git clone --branch ${OAGW_BRANCH} --single-branch https://${GITHUB_TOKEN}@github.com:/t2k-software/OAGenWeightsApps.git OAGenWeightsApps_${OAGW_BRANCH_NAME}
 fi
 
@@ -51,6 +54,9 @@ cd ${DL_SFT}/NEUT
 if [ -d "$DL_SFT/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}" ]; then
   echo "NOTE: NEUT directory 'NEUT_${OAGWDEPS_NEUT_VERSION}' already exists - will not clone"
 else
+  echo "========================================"
+  echo "Cloning NEUT"
+  echo "========================================"
   git clone --branch ${OAGWDEPS_NEUT_VERSION} --single-branch https://${GITHUB_TOKEN}@github.com:/neut-devel/neut NEUT_${OAGWDEPS_NEUT_VERSION}
 fi
 
@@ -64,7 +70,10 @@ cd ${DL_SFT}/NIWGReWeight
 
 if [ -d "$DL_SFT/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}" ]; then
   echo "NOTE: NIWGReWeight directory 'NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}' already exists - will not clone"
-else
+else 
+  echo "========================================"
+  echo "Cloning NIWGReWeight"
+  echo "========================================"
   git clone --branch ${OAGWDEPS_NIWGReWeight_VERSION} --single-branch https://${GITHUB_TOKEN}@github.com:/t2k-software/NIWGReWeight.git NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}
 fi
 
@@ -85,12 +94,19 @@ else
 fi
 cd HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}
 
+echo "========================================"
+echo "Cloning HighLAND2"
+echo "========================================"
+
 export ND280_ROOT=$(pwd)
 export ND280_NJOBS=1
 
 if [ -d "$DL_SFT/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/nd280SoftwarePilot" ]; then
   echo "NOTE: HighLAND2 directory 'HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}' already contains package 'nd280SoftwarePilot' - will not clone"
 else
+  echo "  -------------------------- "
+  echo "  Cloning nd280SoftwarePilot"
+  echo "  -------------------------- "
   git clone https://oauth2:${GITLAB_TOKEN}@git.t2k.org/nd280/pilot/nd280SoftwarePilot.git
 fi;
 cd nd280SoftwarePilot
@@ -101,6 +117,9 @@ cd ${ND280_ROOT}
 if [ -d "$DL_SFT/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/highland2SoftwarePilot" ]; then
   echo "NOTE: HighLAND2 directory 'HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}' already contains package 'highland2SoftwarePilot' - will not clone"
 else
+  echo "  ------------------------------ "
+  echo "  Cloning highland2SoftwarePilot"
+  echo "  ------------------------------ "
   git clone https://oauth2:${GITLAB_TOKEN}@git.t2k.org/nd280/highland2Software/highland2SoftwarePilot.git
 fi
 cd highland2SoftwarePilot
@@ -131,6 +150,9 @@ elif [[ "$FlagsName" == *"-std=c++17"* ]]; then
   CStandard="-DND280_PROJECT_CXX_STANDARD=17"
 fi
 
+  echo "  -------------------------------------------- "
+  echo "  Cloning non-SoftwarePilot HighLAND2 Packages"
+  echo "  -------------------------------------------- "
 highlandClone="highland-install -R -c ${CStandard} ${OAGWDEPS_HIGHLAND_VERSION}"
 
 eval ${highlandClone}
@@ -146,6 +168,9 @@ cd ${DL_SFT}/T2KReWeight
 if [ -d "$DL_SFT/T2KReWeight/T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}" ]; then
   echo "NOTE: T2KReWeight directory 'T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}' already exists - will not clone"
 else
+  echo "========================================"
+  echo "Cloning T2KReWeight"
+  echo "========================================"
   git clone --branch ${OAGWDEPS_T2KReWeight_VERSION} --single-branch https://${GITHUB_TOKEN}@github.com:/t2k-software/T2KReWeight.git T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}
 fi
 
