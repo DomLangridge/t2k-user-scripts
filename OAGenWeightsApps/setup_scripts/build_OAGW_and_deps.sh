@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Setup
+# ----- Setup -----
 
 export DL_SFT=/home/dlangrid/sft
 
@@ -19,7 +19,6 @@ build_clean=true
 
 # Version Control
 
-OAGW_BRANCH=develop
 OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
@@ -27,15 +26,23 @@ OAGWDEPS_HIGHLAND_VERSION=3.22.4
 OAGW_BRANCH_NAME="develop"
 
 echo "-------------------------------------------------------------------------------------"
-echo "Cloning OAGenWeights and dependencies into: OAGenWeightsApps_$OAGW_BRANCH_NAME"
+echo "Building OAGenWeights and dependencies for: OAGenWeightsApps_$OAGW_BRANCH_NAME"
 echo "-------------------------------------------------------------------------------------"
 echo "Version Control:"
-echo "  OAGW:      $OAGW_BRANCH"
 echo "  NEUT:      $OAGWDEPS_NEUT_VERSION"
 echo "  NIWGRW:    $OAGWDEPS_NIWGReWeight_VERSION"
 echo "  HighLAND2: $OAGWDEPS_HIGHLAND_VERSION"
 echo "  T2KRW:     $OAGWDEPS_T2KReWeight_VERSION"
 echo "-------------------------------------------------------------------------------------"
+
+# build directories (named for dependencies, except for OAGW)
+BUILD_DIR_NEUT=build
+BUILD_DIR_NIWGRW=build_with_NEUT${OAGWDEPS_NEUT_VERSION}
+BUILD_DIR_T2KRW=build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
+BUILD_DIR_OAGW=build
+
+
+# ----- build -----
 
 # NEUT
 if [ $build_neut == "true" ]; then
@@ -44,8 +51,8 @@ if [ $build_neut == "true" ]; then
   echo "========================================"
   cd ${DL_SFT}/NEUT
   cd NEUT_${OAGWDEPS_NEUT_VERSION}
-  mkdir build
-  cd build
+  mkdir $BUILD_DIR_NEUT
+  cd $BUILD_DIR_NEUT
   ../src/configure --prefix=$(readlink -f Linux) --enable-builtin-cernlib
   if [ $build_clean == "true" ]; then
     make clean
@@ -56,7 +63,7 @@ fi
 
 # If this fails, check the neut github for install steps and troubleshooting
 
-source ${DL_SFT}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/build/Linux/setup.sh
+source ${DL_SFT}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/$BUILD_DIR_NEUT/Linux/setup.sh
 
 
 # NIWGReWeight (NEUT dependency)
@@ -67,8 +74,8 @@ if [ $build_niwgrw == "true" ]; then
   echo "========================================"
   cd ${DL_SFT}/NIWGReWeight
   cd NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}
-  mkdir build_with_NEUT${OAGWDEPS_NEUT_VERSION}
-  cd build_with_NEUT${OAGWDEPS_NEUT_VERSION}
+  mkdir $BUILD_DIR_NIWGRW
+  cd $BUILD_DIR_NIWGRW
   cmake ../
   if [ $build_clean == "true" ]; then
     make clean
@@ -77,7 +84,7 @@ if [ $build_niwgrw == "true" ]; then
   make install
 fi
 
-source ${DL_SFT}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/build/Linux/bin/setup.NIWG.sh
+source ${DL_SFT}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
 
 
 # HighLAND2
@@ -145,7 +152,7 @@ source ${ND280_ROOT}/psycheMaster_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 source ${ND280_ROOT}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 source ${ND280_ROOT}/oaAnalysisReader_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 
-export ND280PROD=prod7E
+export ND280PROD=prod8
 
 
 # T2KReWeight (NIWGReWeight [NEUT] & HighLAND2 dependency)
@@ -156,8 +163,8 @@ if [ $build_t2krw == "true" ]; then
   echo "========================================"
   cd ${DL_SFT}/T2KReWeight
   cd T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}
-  mkdir build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
-  cd build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
+  mkdir $BUILD_DIR_T2KRW
+  cd $BUILD_DIR_T2KRW
   cmake ../
   if [ $build_clean == "true" ]; then
     make clean
@@ -166,7 +173,7 @@ if [ $build_t2krw == "true" ]; then
   make install
 fi
 
-source ${DL_SFT}/T2KReWeight/T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}/build/Linux/bin/setup.T2K.sh
+source ${DL_SFT}/T2KReWeight/T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}/$BUILD_DIR_T2KRW/Linux/bin/setup.T2K.sh
 
 
 # OAGenWeightsApps (T2KReWeight [NIWGReWeight {NEUT} & HighLAND2] dependency)
@@ -176,8 +183,8 @@ if [ $build_oagw == "true" ]; then
   echo "Building OAGenWeightsApps"
   echo "========================================"
   cd ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}
-  mkdir build
-  cd build
+  mkdir $BUILD_DIR_OAGW
+  cd $BUILD_DIR_OAGW
   cmake ../
   if [ $build_clean == "true" ]; then
     make clean
@@ -186,4 +193,4 @@ if [ $build_oagw == "true" ]; then
   make install
 fi
 
-source ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}/build/Linux/bin/setup.OAGen.sh
+source ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}/$BUILD_DIR_OAGW/Linux/bin/setup.OAGen.sh
