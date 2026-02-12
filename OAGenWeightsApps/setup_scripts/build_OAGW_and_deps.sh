@@ -141,9 +141,9 @@ source highland2SoftwarePilot.profile
 
 # Double check paths of the below files - name specifics may need a tweak
 
-source ${ND280_ROOT}/psycheMaster_4.21.1/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
+source ${ND280_ROOT}/psycheMaster_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 source ${ND280_ROOT}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
-source ${ND280_ROOT}/oaAnalysisReader_3.4/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
+source ${ND280_ROOT}/oaAnalysisReader_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 
 export ND280PROD=prod7E
 
