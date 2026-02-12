@@ -49,7 +49,7 @@ source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/psycheMaster_
 source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/oaAnalysisReader_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 
-export ND280PROD=prod8
+export ND280PROD=prod7E
 
 source ${SFT_DIR}/T2KReWeight/T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}/$BUILD_DIR_T2KRW/Linux/bin/setup.T2K.sh
 

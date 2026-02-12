@@ -152,7 +152,7 @@ source ${ND280_ROOT}/psycheMaster_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 source ${ND280_ROOT}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 source ${ND280_ROOT}/oaAnalysisReader_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
 
-export ND280PROD=prod8
+export ND280PROD=prod7E
 
 
 # T2KReWeight (NIWGReWeight [NEUT] & HighLAND2 dependency)
