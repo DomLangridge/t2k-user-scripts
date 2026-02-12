@@ -150,9 +150,10 @@ elif [[ "$FlagsName" == *"-std=c++17"* ]]; then
   CStandard="-DND280_PROJECT_CXX_STANDARD=17"
 fi
 
-  echo "  -------------------------------------------- "
-  echo "  Cloning non-SoftwarePilot HighLAND2 Packages"
-  echo "  -------------------------------------------- "
+echo "  -------------------------------------------- "
+echo "  Cloning non-SoftwarePilot HighLAND2 Packages"
+echo "  -------------------------------------------- "
+
 highlandClone="highland-install -R -c ${CStandard} ${OAGWDEPS_HIGHLAND_VERSION}"
 
 eval ${highlandClone}
