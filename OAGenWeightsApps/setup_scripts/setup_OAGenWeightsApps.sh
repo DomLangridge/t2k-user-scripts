@@ -24,7 +24,7 @@ echo "  HighLAND2: $OAGWDEPS_HIGHLAND_VERSION"
 echo "  T2KRW:     $OAGWDEPS_T2KReWeight_VERSION"
 echo "-------------------------------------------------------------------------------------"
 
-# build directories (named for dependencies, except for OAGW)
+# build directories (named by dependency, except for OAGW)
 BUILD_DIR_NEUT=build
 BUILD_DIR_NIWGRW=build_with_NEUT${OAGWDEPS_NEUT_VERSION}
 BUILD_DIR_T2KRW=build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
