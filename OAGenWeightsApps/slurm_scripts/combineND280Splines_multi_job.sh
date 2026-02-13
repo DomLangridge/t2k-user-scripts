@@ -6,7 +6,6 @@
 #SBATCH --time=6:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=3,7
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
@@ -14,45 +13,47 @@
 # ! Step 3 of input generation pipeline !
 # ! Updated to use outputs of makeXSecAndNDSystSplines_job.sh !
 
-# ! Should only need to be run once !
-# ! Script will run a separate job for each folder of XSec_ND files !
-# ! MAKE SURE NUMBER OF JOBS IN JOB ARRAY MATCHES NUMBER OF ENTRIES IN CONFIG ARRAYS !
-
 # --- JOB CONFIG ---
 
-OAGW_DIR=/home/dlangrid/sft/OAGenWeightsApps
-INPUT_LOC=/home/dlangrid/scratch/Splines/Prod7E/OAGenWeightsAppsOutputs/v12_Highland_3.22.4_mirrored/XSec_ND/
-OUTPUT_LOC=/home/dlangrid/scratch/Splines/Prod7E/OAGenWeightsAppsOutputs/v12_Highland_3.22.4_mirrored/CombinedSplines/
+echo Job started at $HOSTNAME
+eval date
+echo
 
-MODE_PATH_LIST=($(< /home/dlangrid/scratch/Splines/Prod7E/OAGenWeightsAppsOutputs/v12_Highland_3.22.4_mirrored/subdirstruct.txt))
+OAGW_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps
+INPUT_LOC=/home/dlangrid/scratch/Outputs_OAGenWeightsApps/Prod7E/v13Test_HadronicW_2a_5/NDS_and_Xsec_Weighted/
+OUTPUT_LOC=/home/dlangrid/scratch/Outputs_OAGenWeightsApps/Prod7E/v13Test_HadronicW_2a_5/CombinedSplines/
+
+SPLINE_TYPE=(
+  MC
+  # Data
+  # Sand
+)
 
 # --- RUN JOB ---
-
-MODE_PATH=${MODE_PATH_LIST[${SLURM_ARRAY_TASK_ID}]}
-
-MC_TYPE=${MODE_PATH%/*}
-MC_TYPE=${MC_TYPE##*/}
-
-OUTPUT_FILE=${MC_TYPE}_${MODE_PATH##*/}_WithoutPOTweight.root
-
-INPUT_FILES=($INPUT_LOC$MODE_PATH/*)
-
-echo Info: running with input directory
-echo $INPUT_LOC$MODE_PATH
-echo 
-echo Info: will output to
-echo $OUTPUT_LOC"/"$MC_TYPE"/"$OUTPUT_FILE
 
 cd ${OAGW_DIR}
 source ${OAGW_DIR}/setup_OAGenWeightsApps.sh
 
-COMMAND="combineND280Splines -f -o "$OUTPUT_LOC"/"$MC_TYPE"/"$OUTPUT_FILE
-for file in ${INPUT_FILES[@]}
-do
-  COMMAND=${COMMAND}" "${file}
-  echo "$file added to arg list"
+for (( i=0; i<${#SPLINE_TYPE[@]}; i++ )); do
+
+  for SUBRUN_DIR in ${INPUT_LOC}/${SPLINE_TYPE[$i]}/*; do
+
+    subrun=$(basename ${SUBRUN_DIR})
+    OUTPUT_FILE="${SPLINE_TYPE[$i]}_${subrun}_WithoutPOTWeights.root"
+
+    COMMAND="combineND280Splines -f -o ${OUTPUT_LOC}/${SPLINE_TYPE[$i]}/${OUTPUT_FILE}"
+    
+    for file in ${SUBRUN_DIR}/*; do
+
+      COMMAND=${COMMAND}" "${file}
+      echo "$file added to arg list"
+
+    done
+
+    echo "Combining $subrun splines..."
+    echo "Running: $COMMAND"
+    eval $COMMAND
+
+  done
+
 done
-
-echo $COMMAND
-
-eval $COMMAND
