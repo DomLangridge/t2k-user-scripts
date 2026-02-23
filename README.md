@@ -11,3 +11,7 @@ A repository for me to keep the various scripts and things that I tend to use:
 `OAGenWeightsApps/setup_scripts` - Scripts for installing, building, and setting up OAGenWeightsApps and its dependencies
 
 `OAGenWeightsApps/slurm_scripts` - Slurm job submission scripts for OAGenWeightsApps
+
+### NextCloud
+
+Scripts for uploading to / downloading from NextCloud. You'll need to add a valid username/password to the file before you can run it.
