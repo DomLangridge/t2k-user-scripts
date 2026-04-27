@@ -14,10 +14,10 @@ OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
 OAGWDEPS_HIGHLAND_VERSION=3.22.4
-OAGW_BRANCH_NAME="develop"
+OAGW_DIR_NAME="blarb"
 
 echo "-------------------------------------------------------------------------------------"
-echo "Cloning OAGenWeights and dependencies into: OAGenWeightsApps_$OAGW_BRANCH_NAME"
+echo "Cloning OAGenWeights and dependencies into: OAGenWeightsApps_$OAGW_DIR_NAME"
 echo "-------------------------------------------------------------------------------------"
 echo "Version Control:"
 echo "  OAGW:      $OAGW_BRANCH"
@@ -34,13 +34,13 @@ if [ ! -d "$DL_SFT/OAGenWeightsApps" ]; then
 fi
 cd ${DL_SFT}/OAGenWeightsApps
 
-if [ -d "$DL_SFT/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}" ]; then
-  echo "NOTE: OAGenWeightsApps directory 'OAGenWeightsApps_${OAGenWeightsApps_${OAGW_BRANCH_NAME}}' already exists - will not clone"
+if [ -d "$DL_SFT/OAGenWeightsApps/OAGenWeightsApps_${OAGW_DIR_NAME}" ]; then
+  echo "NOTE: OAGenWeightsApps directory 'OAGenWeightsApps_${OAGenWeightsApps_${OAGW_DIR_NAME}}' already exists - will not clone"
 else
   echo "========================================"
   echo "Cloning OAGenWeightsApps"
   echo "========================================"
-  git clone --branch ${OAGW_BRANCH} --single-branch https://${GITHUB_TOKEN}@github.com:/t2k-software/OAGenWeightsApps.git OAGenWeightsApps_${OAGW_BRANCH_NAME}
+  git clone --branch ${OAGW_BRANCH} --single-branch https://${GITHUB_TOKEN}@github.com:/t2k-software/OAGenWeightsApps.git OAGenWeightsApps_${OAGW_DIR_NAME}
 fi
 
 

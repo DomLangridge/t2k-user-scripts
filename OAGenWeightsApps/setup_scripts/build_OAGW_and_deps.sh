@@ -22,12 +22,12 @@ OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
 OAGWDEPS_HIGHLAND_VERSION=3.22.4
-OAGW_BRANCH_NAME="HadronicW"
+OAGW_DIR_NAME="blarb"
 
 export ND280PROD=prod8_V17
 
 echo "-------------------------------------------------------------------------------------"
-echo "Building OAGenWeights and dependencies for: OAGenWeightsApps_$OAGW_BRANCH_NAME"
+echo "Building OAGenWeights and dependencies for: OAGenWeightsApps_$OAGW_DIR_NAME"
 echo "-------------------------------------------------------------------------------------"
 echo "Version Control:"
 echo "  NEUT:       $OAGWDEPS_NEUT_VERSION"
@@ -183,7 +183,7 @@ if [ $build_oagw == "true" ]; then
   echo "========================================"
   echo "Building OAGenWeightsApps"
   echo "========================================"
-  cd ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}
+  cd ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_DIR_NAME}
   mkdir $BUILD_DIR_OAGW
   cd $BUILD_DIR_OAGW
   cmake ../
@@ -194,4 +194,4 @@ if [ $build_oagw == "true" ]; then
   make install
 fi
 
-source ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_BRANCH_NAME}/$BUILD_DIR_OAGW/Linux/bin/setup.OAGen.sh
+source ${DL_SFT}/OAGenWeightsApps/OAGenWeightsApps_${OAGW_DIR_NAME}/$BUILD_DIR_OAGW/Linux/bin/setup.OAGen.sh
