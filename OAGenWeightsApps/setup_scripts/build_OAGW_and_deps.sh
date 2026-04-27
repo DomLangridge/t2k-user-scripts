@@ -3,14 +3,13 @@
 # ----- Setup -----
 
 export DL_SFT=/home/dlangrid/sft
-
 export ROOT_ROOT=$ROOTSYS
 export ROOT_DIR=$ROOTSYS
 
 # build options
 
-build_neut=true
-build_niwgrw=true
+build_neut=false
+build_niwgrw=false
 build_highland=true
 build_t2krw=true
 build_oagw=true
@@ -23,19 +22,23 @@ OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
 OAGWDEPS_HIGHLAND_VERSION=3.22.4
-OAGW_BRANCH_NAME="develop"
+OAGW_BRANCH_NAME="HadronicW"
+
+export ND280PROD=prod8_V17
 
 echo "-------------------------------------------------------------------------------------"
 echo "Building OAGenWeights and dependencies for: OAGenWeightsApps_$OAGW_BRANCH_NAME"
 echo "-------------------------------------------------------------------------------------"
 echo "Version Control:"
-echo "  NEUT:      $OAGWDEPS_NEUT_VERSION"
-echo "  NIWGRW:    $OAGWDEPS_NIWGReWeight_VERSION"
-echo "  HighLAND2: $OAGWDEPS_HIGHLAND_VERSION"
-echo "  T2KRW:     $OAGWDEPS_T2KReWeight_VERSION"
+echo "  NEUT:       $OAGWDEPS_NEUT_VERSION"
+echo "  NIWGRW:     $OAGWDEPS_NIWGReWeight_VERSION"
+echo "  HighLAND2:  $OAGWDEPS_HIGHLAND_VERSION"
+echo "  T2KRW:      $OAGWDEPS_T2KReWeight_VERSION"
+echo ""
+echo "  ND280 Prod: $ND280PROD"
 echo "-------------------------------------------------------------------------------------"
 
-# build directories (named by dependency, except for OAGW)
+# build directories (named for dependencies, except for OAGW)
 BUILD_DIR_NEUT=build
 BUILD_DIR_NIWGRW=build_with_NEUT${OAGWDEPS_NEUT_VERSION}
 BUILD_DIR_T2KRW=build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
@@ -134,7 +137,7 @@ if [ $build_highland == "true" ]; then
   echo "========================================"
   echo "Building HighLAND2"
   echo "========================================"
-  highlandInstall="highland-install -R -j4 ${CStandard} ${OAGWDEPS_HIGHLAND_VERSION}"
+  highlandInstall="highland-install -R -j4 ${CStandard} -p ${ND280PROD} ${OAGWDEPS_HIGHLAND_VERSION}"
 
   eval ${highlandInstall}
 fi
@@ -148,11 +151,9 @@ source highland2SoftwarePilot.profile
 
 # Double check paths of the below files - name specifics may need a tweak
 
-source ${ND280_ROOT}/psycheMaster_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
-source ${ND280_ROOT}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
-source ${ND280_ROOT}/oaAnalysisReader_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
-
-export ND280PROD=prod7E
+source ${ND280_ROOT}/psycheMaster_*/$(nd280-system)/setup.sh
+source ${ND280_ROOT}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/$(nd280-system)/setup.sh
+source ${ND280_ROOT}/oaAnalysisReader_*/$(nd280-system)/setup.sh
 
 
 # T2KReWeight (NIWGReWeight [NEUT] & HighLAND2 dependency)
