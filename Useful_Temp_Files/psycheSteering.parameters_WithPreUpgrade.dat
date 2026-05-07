@@ -151,7 +151,7 @@ Parameters to control Detector Weight Systematics
  < psycheSteering.Weights.EnableSIPion                = 1 >
  < psycheSteering.Weights.EnableSIProton              = 1 >
  < psycheSteering.Weights.EnableSandMuons             = 1 >
- < psycheSteering.Weights.EnableECalPID               = 0 > // Prod7
+ < psycheSteering.Weights.EnableECalPID               = 1 > // Prod7+
  < psycheSteering.Weights.EnableECalEmHipPID          = 0 > // Prod6
  < psycheSteering.Weights.EnableTpcECalMatchEff       = 1 >
  < psycheSteering.Weights.EnableECalPhotonPileUp      = 1 >
