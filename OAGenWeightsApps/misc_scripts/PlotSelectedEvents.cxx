@@ -22,7 +22,8 @@ void PlotSelectedEvents() {
   TFile *inputFile = TFile::Open(inputFileName.c_str());
 
   // Open (hardcoded) output file
-  TFile *outputFile = new TFile("SelectedEventPlots_CatchOBandCIE.root", "recreate");
+  TFile *outputFile_TA = new TFile("SelectedEventPlots_TA_selection.root", "recreate");
+  TFile *outputFile_DL = new TFile("SelectedEventPlots_DL_selection.root", "recreate");
 
   // Get tree & branches for sample_sum
   TTree *sample_sum = (TTree *)inputFile->Get("sample_sum");
@@ -51,6 +52,8 @@ void PlotSelectedEvents() {
   TH1D *hist_HATmu = new TH1D("hist_HATmu", "HATmu;CosThetamu;", 100, -1, 1);
   TH1D *hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
 
+////////// TA selection method //////////
+
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
 
@@ -73,13 +76,54 @@ void PlotSelectedEvents() {
 
   }
 
-  // Write histograms
-  // hist_All->Write();
-  // hist_TPCmu->Write();
-  // hist_HATmu->Write();
-  // hist_SFGmu->Write();
+  outputFile_TA->Write();
 
-  outputFile->Write();
+/////////////////////////////////////////
+
+  // Reset histograms
+
+  delete hist_All;
+  delete hist_TPCmu;
+  delete hist_HATmu;
+  delete hist_SFGmu;
+
+  TH1D *hist_All = new TH1D("hist_All", "AllSamples;", 100, -1, 1);
+  TH1D *hist_TPCmu = new TH1D("hist_TPCmu", "TPCmu;CosThetamu;", 100, -1, 1);
+  TH1D *hist_HATmu = new TH1D("hist_HATmu", "HATmu;CosThetamu;", 100, -1, 1);
+  TH1D *hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
+
+////////// DL selection method //////////
+
+  // Loop over entries
+  for (uint i=0; i<sample_sum->GetEntries(); i++) {
+
+    sample_sum->GetEntry(i);
+
+    // Skip out-of-bunch events
+    if ( Bunch < 0 ) contnue;
+
+    // Skip consecutive identical events, only if the original entry was in bunch
+    if ( isConsecutiveIdenticalEvent == 0 ) {
+      sample_sum->GetEntry(i-1);
+
+      if ( Bunch >= 0 ) continue;
+
+    }
+
+    // fill histogram by sample
+    hist_All->Fill(CosThetamu);
+    if ( SelectedSample == 168 ) hist_TPCmu->Fill(CosThetamu);
+    if ( SelectedSample == 169 ) hist_HATmu->Fill(CosThetamu);
+    if ( SelectedSample == 170 ) hist_SFGmu->Fill(CosThetamu);
+
+  }
+
+  // Write histograms
+
+  outputFile_DL->Write();
+
+/////////////////////////////////////////
+
 }
 
 int main() {
