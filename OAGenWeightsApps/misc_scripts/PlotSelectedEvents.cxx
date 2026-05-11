@@ -57,7 +57,7 @@ void PlotSelectedEvents() {
     // // Skip entries where the following entry isn't flagged as 'isConsecutiveIdenticalEvent' (based on Tomochika's investigations)
     if ( i != (sample_sum->GetEntries()-1) ) {
       sample_sum->GetEntry(i+1);
-      if ( isConsecutiveIdenticalEvent != 0 ) continue; // Doesn't this always keep the last entry in an event? Is that something we want to do?
+      if ( isConsecutiveIdenticalEvent != 0 ) continue; // Doesn't this only skip the last entry in an event? Is that something we want to do?
     }
 
     sample_sum->GetEntry(i);
