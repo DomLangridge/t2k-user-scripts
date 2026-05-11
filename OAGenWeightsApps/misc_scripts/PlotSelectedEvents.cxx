@@ -22,7 +22,7 @@ void PlotSelectedEvents() {
   TFile *inputFile = TFile::Open(inputFileName.c_str());
 
   // Open (hardcoded) output file
-  TFile *outputFile = new TFile("SelectedEventPlots.root", "recreate");
+  TFile *outputFile = new TFile("SelectedEventPlots_CatchOBandCIE.root", "recreate");
 
   // Get tree & branches for sample_sum
   TTree *sample_sum = (TTree *)inputFile->Get("sample_sum");
@@ -55,16 +55,15 @@ void PlotSelectedEvents() {
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
 
     // // Skip entries where the following entry isn't flagged as 'isConsecutiveIdenticalEvent' (based on Tomochika's investigations)
-    // if ( i != (sample_sum->GetEntries()-1) ) {
-    //   sample_sum->GetEntry(i+1);
-    //   if ( isConsecutiveIdenticalEvent != 0 ) continue; // Doesn't this always keep the last entry in an event? Is that something we want to do?
-    // }
+    if ( i != (sample_sum->GetEntries()-1) ) {
+      sample_sum->GetEntry(i+1);
+      if ( isConsecutiveIdenticalEvent != 0 ) continue; // Doesn't this always keep the last entry in an event? Is that something we want to do?
+    }
 
     sample_sum->GetEntry(i);
 
-    // // Skip OB (out-of-bunch) entries
-    // flattree->GetEntry(i);
-    // if ( Bunch < 0 ) continue;
+    // Skip OB (out-of-bunch) entries
+    if ( Bunch < 0 ) continue;
 
     // fill histogram by sample
     hist_All->Fill(CosThetamu);
