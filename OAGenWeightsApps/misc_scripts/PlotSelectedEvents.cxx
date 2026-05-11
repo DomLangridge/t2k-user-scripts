@@ -108,12 +108,11 @@ void PlotSelectedEvents() {
     // Skip out-of-bunch events
     if ( Bunch < 0 ) continue;
 
-    // Skip consecutive identical events, only if the original entry was in bunch
+    // Skip consecutive identical events, only if the previous entry was in bunch
     if ( isConsecutiveIdenticalEvent == 0 ) {
       sample_sum->GetEntry(i-1);
-
       if ( Bunch >= 0 ) continue;
-
+      sample_sum->GetEntry(i);
     }
 
     // fill histogram by sample
