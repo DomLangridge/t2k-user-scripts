@@ -39,7 +39,7 @@ void PlotSelectedEvents() {
 
   flattree->SetBranchAddress("Bunch", &Bunch);
 
-  // Make them friends :) [might not be necessary but I think it's cute]
+  // Make them friends :)
   sample_sum->AddFriend("flattree");
 
   // Create Histograms
