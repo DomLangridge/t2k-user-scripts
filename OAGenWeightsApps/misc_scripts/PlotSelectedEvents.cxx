@@ -21,10 +21,6 @@ void PlotSelectedEvents() {
   std::string inputFileName = "/home/dlangrid/scratch/Splines/UpgradeTests/HL5.9_SplineTest_makeND280SystSplinesOutput.root";
   TFile *inputFile = TFile::Open(inputFileName.c_str());
 
-  // Open (hardcoded) output file
-  TFile *outputFile_TA = new TFile("SelectedEventPlots_TA_selection.root", "recreate");
-  TFile *outputFile_DL = new TFile("SelectedEventPlots_DL_selection.root", "recreate");
-
   // Get tree & branches for sample_sum
   TTree *sample_sum = (TTree *)inputFile->Get("sample_sum");
 
@@ -54,6 +50,13 @@ void PlotSelectedEvents() {
 
 ////////// TA selection method //////////
 
+  // Open (hardcoded) output file
+  TFile *outputFile_TA = new TFile("SelectedEventPlots_TA_selection.root", "recreate");
+  hist_All->SetDirectory(outputFile_TA);
+  hist_TPCmu->SetDirectory(outputFile_TA);
+  hist_HATmu->SetDirectory(outputFile_TA);
+  hist_SFGmu->SetDirectory(outputFile_TA);
+
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
 
@@ -77,22 +80,25 @@ void PlotSelectedEvents() {
   }
 
   outputFile_TA->Write();
+  outputFile_TA->Close();
 
 /////////////////////////////////////////
 
   // Reset histograms
 
-  delete hist_All;
-  delete hist_TPCmu;
-  delete hist_HATmu;
-  delete hist_SFGmu;
-
-  TH1D *hist_All = new TH1D("hist_All", "AllSamples;", 100, -1, 1);
-  TH1D *hist_TPCmu = new TH1D("hist_TPCmu", "TPCmu;CosThetamu;", 100, -1, 1);
-  TH1D *hist_HATmu = new TH1D("hist_HATmu", "HATmu;CosThetamu;", 100, -1, 1);
-  TH1D *hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
+  hist_All = new TH1D("hist_All", "AllSamples;", 100, -1, 1);
+  hist_TPCmu = new TH1D("hist_TPCmu", "TPCmu;CosThetamu;", 100, -1, 1);
+  hist_HATmu = new TH1D("hist_HATmu", "HATmu;CosThetamu;", 100, -1, 1);
+  hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
 
 ////////// DL selection method //////////
+
+  // Open (hardcoded) output file
+  TFile *outputFile_DL = new TFile("SelectedEventPlots_DL_selection.root", "recreate");
+  hist_All->SetDirectory(outputFile_DL);
+  hist_TPCmu->SetDirectory(outputFile_DL);
+  hist_HATmu->SetDirectory(outputFile_DL);
+  hist_SFGmu->SetDirectory(outputFile_DL);
 
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
@@ -100,7 +106,7 @@ void PlotSelectedEvents() {
     sample_sum->GetEntry(i);
 
     // Skip out-of-bunch events
-    if ( Bunch < 0 ) contnue;
+    if ( Bunch < 0 ) continue;
 
     // Skip consecutive identical events, only if the original entry was in bunch
     if ( isConsecutiveIdenticalEvent == 0 ) {
@@ -121,6 +127,7 @@ void PlotSelectedEvents() {
   // Write histograms
 
   outputFile_DL->Write();
+  outputFile_DL->Close();
 
 /////////////////////////////////////////
 
