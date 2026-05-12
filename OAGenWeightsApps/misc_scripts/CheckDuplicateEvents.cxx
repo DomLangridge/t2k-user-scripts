@@ -54,7 +54,7 @@ void CheckDuplicateEvents() {
     if (!entryList.empty() && sEvt != currentEvent) {
 
       // Print info
-      if ( (entryList.size() > 1) || (checkAllEvents && entryList.size() > 0) ) {
+      if ( (entryList.size() > 1) || (checkAllEvents) ) {
         outputFile << "Event: " << entryList[0] << " (" << entryList.size() << " entries)" << std::endl;
         for (uint j=0; j<entryList.size(); j++) {
           outputFile << "  Entry = " << entryList[j] << ", sNTrueVertices = " << nTrueVerticesList[j] << ", Bunch = " << BunchList[j] << std::endl; 
@@ -77,9 +77,11 @@ void CheckDuplicateEvents() {
   }
 
   // Print info for the last event
-  outputFile << "Event: " << entryList[0] << " (" << entryList.size() << " entries)" << std::endl;
-  for (uint j=0; j<entryList.size(); j++) {
-    outputFile << "  Entry = " << entryList[j] << ", sNTrueVertices = " << nTrueVerticesList[j] << ", Bunch = " << BunchList[j] << std::endl; 
+  if ( (entryList.size() > 1) || (checkAllEvents) ) {
+    outputFile << "Event: " << entryList[0] << " (" << entryList.size() << " entries)" << std::endl;
+    for (uint j=0; j<entryList.size(); j++) {
+      outputFile << "  Entry = " << entryList[j] << ", sNTrueVertices = " << nTrueVerticesList[j] << ", Bunch = " << BunchList[j] << std::endl; 
+    }
   }
 
   outputFile.close();
