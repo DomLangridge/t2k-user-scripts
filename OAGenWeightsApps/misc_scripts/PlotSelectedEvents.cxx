@@ -72,16 +72,17 @@ void PlotSelectedEvents() {
 
     selected = true;
 
-    // Only select entries where the following entry is flagged as 'isConsecutiveIdenticalEvent == 0' (false) - based on Tomochika's investigations
-    if ( i != (sample_sum->GetEntries()-1) ) {
-      sample_sum->GetEntry(i+1);
-      if ( bool(isConsecutiveIdenticalEvent) != 0 ) selected = false;
-    }
-
     sample_sum->GetEntry(i);
 
     // Skip OB (out-of-bunch) entries
     if ( Bunch < 0 ) selected = false;
+
+    // Skip entries flagged as 'isConsecutiveIdenticalEvent' unless the original entry was out of bunch
+    if ( bool(isConsecutiveIdenticalEvent) == true ) {
+      sample_sum->GetEntry(i-1);
+      if (Bunch >= 0) selected = false;
+      sample_sum->GetEntry(i);
+    }
 
     // Print entry to .out file
     if (EventNumber != currentEvent) {
