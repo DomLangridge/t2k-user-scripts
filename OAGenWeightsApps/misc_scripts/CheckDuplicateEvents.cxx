@@ -16,6 +16,9 @@
 
 void CheckDuplicateEvents() {
 
+  // Switch to check all events
+  bool checkAllEvents = false;
+
   // Open (hardcoded) input file
   std::string flattreeFileName = "/home/dlangrid/scratch/Flattrees/HL5.9/flattrees_p8v17_neut_mc_run_91320000_hl5.9.root";
   TFile *flattreeFile = TFile::Open(flattreeFileName.c_str());
@@ -25,15 +28,15 @@ void CheckDuplicateEvents() {
   outputFile.open("CheckDuplicateEvents.out");
 
   // Get tree & branches
-  TTree *flatTree = (TTree *)flattreeFile->Get("flattree");
+  TTree *flattree = (TTree *)flattreeFile->Get("flattree");
 
   Int_t sEvt;
   Int_t sNTrueVertices;
   Int_t Bunch;
 
-  flatTree->SetBranchAddress("sEvt", &sEvt);
-  flatTree->SetBranchAddress("sNTrueVertices", &sNTrueVertices);
-  flatTree->SetBranchAddress("Bunch", &Bunch);
+  flattree->SetBranchAddress("sEvt", &sEvt);
+  flattree->SetBranchAddress("sNTrueVertices", &sNTrueVertices);
+  flattree->SetBranchAddress("Bunch", &Bunch);
 
   // Setup lists and things useful for the for
   std::vector<int> entryList;
@@ -42,16 +45,16 @@ void CheckDuplicateEvents() {
 
   int currentEvent=-999;
 
-  for (uint i=0; i<flatTree->GetEntries(); i++) {
+  for (uint i=0; i<flattree->GetEntries(); i++) {
 
     // Get current entry info
-    flatTree->GetEntry(i);
+    flattree->GetEntry(i);
 
     // If we've reached a new event, print the info for the repeated event (if there was one) and clear the vectors
     if (!entryList.empty() && sEvt != currentEvent) {
 
       // Print info
-      if (entryList.size() > 1) {
+      if ( (entryList.size() > 1) || (checkAllEvents && entryList.size() > 0) ) {
         outputFile << "Event: " << entryList[0] << " (" << entryList.size() << " entries)" << std::endl;
         for (uint j=0; j<entryList.size(); j++) {
           outputFile << "  Entry = " << entryList[j] << ", sNTrueVertices = " << nTrueVerticesList[j] << ", Bunch = " << BunchList[j] << std::endl; 
