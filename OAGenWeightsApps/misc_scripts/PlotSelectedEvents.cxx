@@ -27,10 +27,14 @@ void PlotSelectedEvents() {
   Double_t CosThetamu;
   Int_t SelectedSample;
   Char_t isConsecutiveIdenticalEvent;
+  Int_t EventNumber;
+  Char_t HaveTruth;
 
   sample_sum->SetBranchAddress("CosThetamu", &CosThetamu);
   sample_sum->SetBranchAddress("SelectedSample", &SelectedSample);
   sample_sum->SetBranchAddress("isConsecutiveIdenticalEvent", &isConsecutiveIdenticalEvent);
+  sample_sum->SetBranchAddress("EventNumber", &EventNumber);
+  sample_sum->SetBranchAddress("HaveTruth", &HaveTruth);
 
   // Get tree & branches for flattree
   TTree *flattree = (TTree *)inputFile->Get("flattree");
@@ -42,6 +46,11 @@ void PlotSelectedEvents() {
   // Make them friends :)
   sample_sum->AddFriend("flattree");
 
+  // Create any variables used in the loops
+  bool selected;
+  int currentEvent = -999;
+  int entriesInEvent = 0;
+
   // Create Histograms
   TH1D *hist_All = new TH1D("hist_All", "AllSamples;", 100, -1, 1);
   TH1D *hist_TPCmu = new TH1D("hist_TPCmu", "TPCmu;CosThetamu;", 100, -1, 1);
@@ -50,46 +59,76 @@ void PlotSelectedEvents() {
 
 ////////// TA selection method //////////
 
-  // Open (hardcoded) output file
+  // Open (hardcoded) output files
   TFile *outputFile_TA = new TFile("SelectedEventPlots_TA_selection.root", "recreate");
   hist_All->SetDirectory(outputFile_TA);
   hist_TPCmu->SetDirectory(outputFile_TA);
   hist_HATmu->SetDirectory(outputFile_TA);
   hist_SFGmu->SetDirectory(outputFile_TA);
 
+  ofstream eventPrint_TA;
+  eventPrint_TA.open("SelectedEvents_TA_selection.out");
+
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
 
-    // // Skip entries where the following entry isn't flagged as 'isConsecutiveIdenticalEvent' (based on Tomochika's investigations)
+    selected = true;
+
+    // Only select entries where the following entry is flagged as 'isConsecutiveIdenticalEvent == 0' (false) - based on Tomochika's investigations
     if ( i != (sample_sum->GetEntries()-1) ) {
       sample_sum->GetEntry(i+1);
-      if ( isConsecutiveIdenticalEvent != 0 ) continue; // Doesn't this only skip the last entry in an event? Is that something we want to do?
+      if ( bool(isConsecutiveIdenticalEvent) != 0 ) selected = false; // This looks like it only ever skips the first entry then
     }
 
     sample_sum->GetEntry(i);
 
     // Skip OB (out-of-bunch) entries
-    if ( Bunch < 0 ) continue;
+    if ( Bunch < 0 ) selected = false;
 
-    // fill histogram by sample
-    hist_All->Fill(CosThetamu);
-    if ( SelectedSample == 168 ) hist_TPCmu->Fill(CosThetamu);
-    if ( SelectedSample == 169 ) hist_HATmu->Fill(CosThetamu);
-    if ( SelectedSample == 170 ) hist_SFGmu->Fill(CosThetamu);
+    // Print entry to .out file
+    if (EventNumber != currentEvent) {
+      if (currentEvent != -999) eventPrint_TA << "Entries in event = " << entriesInEvent << std::endl;
+      eventPrint_TA << "============================== Event = " << EventNumber << " ==============================" << std::endl;
+      currentEvent = EventNumber;
+      entriesInEvent = 1;
+    } else {
+      entriesInEvent++;
+    }
+    eventPrint_TA << "     Entry = " << i;
+    eventPrint_TA << "     Bunch = " << Bunch;
+    eventPrint_TA << "     Truth = " << bool(HaveTruth);
+    eventPrint_TA << "     isCIE = " << bool(isConsecutiveIdenticalEvent);
+    eventPrint_TA << "     Sample = " << SelectedSample;
+    if (selected) eventPrint_TA << "     selected";
+    eventPrint_TA << std::endl;
+    if (i == (sample_sum->GetEntries()-1)) eventPrint_TA << "Entries in event = " << entriesInEvent << std::endl;
+
+    // fill histograms if selected
+    if (selected) {
+      hist_All->Fill(CosThetamu);
+      if ( SelectedSample == 168 ) hist_TPCmu->Fill(CosThetamu);
+      if ( SelectedSample == 169 ) hist_HATmu->Fill(CosThetamu);
+      if ( SelectedSample == 170 ) hist_SFGmu->Fill(CosThetamu);
+    }
 
   }
 
   outputFile_TA->Write();
   outputFile_TA->Close();
 
+  eventPrint_TA.close();
+
 /////////////////////////////////////////
 
-  // Reset histograms
+  // Reset histograms and variables
 
   hist_All = new TH1D("hist_All", "AllSamples;", 100, -1, 1);
   hist_TPCmu = new TH1D("hist_TPCmu", "TPCmu;CosThetamu;", 100, -1, 1);
   hist_HATmu = new TH1D("hist_HATmu", "HATmu;CosThetamu;", 100, -1, 1);
   hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
+
+  currentEvent = -999;
+  entriesInEvent = 0;
 
 ////////// DL selection method //////////
 
@@ -100,26 +139,51 @@ void PlotSelectedEvents() {
   hist_HATmu->SetDirectory(outputFile_DL);
   hist_SFGmu->SetDirectory(outputFile_DL);
 
+  ofstream eventPrint_DL;
+  eventPrint_DL.open("SelectedEvents_DL_selection.out");
+
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
+
+    selected = true;
 
     sample_sum->GetEntry(i);
 
     // Skip out-of-bunch events
-    if ( Bunch < 0 ) continue;
+    if ( Bunch < 0 ) selected = false;
 
     // Skip consecutive identical events, only if the previous entry was in bunch
-    if ( isConsecutiveIdenticalEvent == 0 ) {
+    if ( bool(isConsecutiveIdenticalEvent) == true ) {
       sample_sum->GetEntry(i-1);
-      if ( Bunch >= 0 ) continue;
+      if ( Bunch >= 0 ) selected = false;
       sample_sum->GetEntry(i);
     }
 
-    // fill histogram by sample
-    hist_All->Fill(CosThetamu);
-    if ( SelectedSample == 168 ) hist_TPCmu->Fill(CosThetamu);
-    if ( SelectedSample == 169 ) hist_HATmu->Fill(CosThetamu);
-    if ( SelectedSample == 170 ) hist_SFGmu->Fill(CosThetamu);
+    // Print entry to .out file
+    if (EventNumber != currentEvent) {
+      if (currentEvent != -999) eventPrint_DL << "Entries in event = " << entriesInEvent << std::endl;
+      eventPrint_DL << "============================== Event = " << EventNumber << " ==============================" << std::endl;
+      currentEvent = EventNumber;
+      entriesInEvent = 1;
+    } else {
+      entriesInEvent++;
+    }
+    eventPrint_DL << "     Entry = " << i;
+    eventPrint_DL << "     Bunch = " << Bunch;
+    eventPrint_DL << "     Truth = " << bool(HaveTruth);
+    eventPrint_DL << "     isCIE = " << bool(isConsecutiveIdenticalEvent);
+    eventPrint_DL << "     Sample = " << SelectedSample;
+    if (selected) eventPrint_DL << "     selected";
+    eventPrint_DL << std::endl;
+    if (i == (sample_sum->GetEntries()-1)) eventPrint_TA << "Entries in event = " << entriesInEvent << std::endl;
+
+    // fill histograms if selected
+    if (selected) {
+      hist_All->Fill(CosThetamu);
+      if ( SelectedSample == 168 ) hist_TPCmu->Fill(CosThetamu);
+      if ( SelectedSample == 169 ) hist_HATmu->Fill(CosThetamu);
+      if ( SelectedSample == 170 ) hist_SFGmu->Fill(CosThetamu);
+    }
 
   }
 
@@ -127,6 +191,8 @@ void PlotSelectedEvents() {
 
   outputFile_DL->Write();
   outputFile_DL->Close();
+
+  eventPrint_DL.close();
 
 /////////////////////////////////////////
 
