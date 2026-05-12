@@ -75,7 +75,7 @@ void PlotSelectedEvents() {
     // Only select entries where the following entry is flagged as 'isConsecutiveIdenticalEvent == 0' (false) - based on Tomochika's investigations
     if ( i != (sample_sum->GetEntries()-1) ) {
       sample_sum->GetEntry(i+1);
-      if ( bool(isConsecutiveIdenticalEvent) != 0 ) selected = false; // This looks like it only ever skips the first entry then
+      if ( bool(isConsecutiveIdenticalEvent) != 0 ) selected = false;
     }
 
     sample_sum->GetEntry(i);
