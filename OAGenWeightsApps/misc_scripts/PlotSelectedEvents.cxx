@@ -1,15 +1,9 @@
-#include <cstdlib>
-#include <stdlib.h>
-
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "TFile.h"
-#include "TObjString.h"
 #include "TTree.h"
-#include "TMacro.h"
 
 // DL: This script is for checking the selected events in OAGW spline files (i.e. outputs from makeND280SystSplines)
 //     Most of this can be done simply with TTree::Draw(), but some selections may require applying cuts based on
