@@ -25,7 +25,8 @@ void CheckDuplicateEvents() {
 
   // Open (hardcoded) output file
   ofstream outputFile;
-  outputFile.open("CheckDuplicateEvents.out");
+  if (checkAllEvents) { outputFile.open("CheckAllEvents.out"); }
+  else { outputFile.open("CheckDuplicateEvents.out"); }
 
   // Get tree & branches
   TTree *flattree = (TTree *)flattreeFile->Get("flattree");
