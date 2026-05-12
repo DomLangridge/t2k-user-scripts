@@ -65,7 +65,7 @@ void PlotSelectedEvents() {
   hist_SFGmu->SetDirectory(outputFile);
 
   ofstream eventPrint;
-  eventPrint.open("SelectedEvents_selection.out");
+  eventPrint.open("SelectedEvents.out");
 
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
