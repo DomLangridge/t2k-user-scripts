@@ -1,15 +1,10 @@
-#include <cstdlib>
-#include <stdlib.h>
-
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include "TFile.h"
-#include "TObjString.h"
 #include "TTree.h"
-#include "TMacro.h"
 
 // DL: This script is for checking for duplicate events in highland flattrees, which is helpful for debugging.
 //     The checked branches can be expanded, and it should be fairly easy to update this with other checks, more flattrees, etc.
