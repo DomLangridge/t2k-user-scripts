@@ -8,11 +8,15 @@ A repository for me to keep the various scripts and things that I tend to use:
 
 `MaCh3_T2K/setup_scripts` - MaCh3 T2K setup script
 
+`MaCh3_T2K/misc_scripts` - Any other scripts I've used for MaCh3 T2K related things
+
 ### OAGenWeightsApps
 
 `OAGenWeightsApps/setup_scripts` - Scripts for installing, building, and setting up OAGenWeightsApps and its dependencies
 
 `OAGenWeightsApps/slurm_scripts` - Slurm job submission scripts for OAGenWeightsApps
+
+`OAGenWeightsApps/misc_scripts` - Any other scripts I've used for OAGenWeightsApps and/or T2K OA ND upgrade related things
 
 ### NextCloud
 
