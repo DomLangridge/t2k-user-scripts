@@ -54,14 +54,17 @@ void PlotSelectedEvents() {
   TH1D *hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
 
   // Open (hardcoded) output files
-  TFile *outputFile = new TFile("SelectedEventPlots.root", "recreate");
+  std::string outputFileName = "SelectedEventPlots.root";
+  std::string eventPrintName = "SelectedEvents.out";
+
+  TFile *outputFile = new TFile(outputFileName.c_str(), "recreate");
   hist_All->SetDirectory(outputFile);
   hist_TPCmu->SetDirectory(outputFile);
   hist_HATmu->SetDirectory(outputFile);
   hist_SFGmu->SetDirectory(outputFile);
 
   ofstream eventPrint;
-  eventPrint.open("SelectedEvents.out");
+  eventPrint.open(eventPrintName.c_str());
 
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
