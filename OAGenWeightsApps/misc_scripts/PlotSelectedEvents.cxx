@@ -22,11 +22,13 @@ void PlotSelectedEvents() {
   Int_t SelectedSample;
   Char_t isConsecutiveIdenticalEvent;
   Int_t EventNumber;
+  Int_t TruthVtx;
   
   sample_sum->SetBranchAddress("CosThetamu", &CosThetamu);
   sample_sum->SetBranchAddress("SelectedSample", &SelectedSample);
   sample_sum->SetBranchAddress("isConsecutiveIdenticalEvent", &isConsecutiveIdenticalEvent);
   sample_sum->SetBranchAddress("EventNumber", &EventNumber);
+  sample_sum->SetBranchAddress("TruthVtx", &TruthVtx);
 
   // Get tree & branches for flattree
   TTree *flattree = (TTree *)inputFile->Get("flattree");
@@ -90,6 +92,7 @@ void PlotSelectedEvents() {
     eventPrint << "     Entry = " << i;
     eventPrint << "     Bunch = " << Bunch;
     eventPrint << "     nTrueVtx = " << sNTrueVertices;
+    eventPrint << "     TruthVtx = " << TruthVtx;
     eventPrint << "     isCIE = " << bool(isConsecutiveIdenticalEvent);
     eventPrint << "     Sample = " << SelectedSample;
     if (selected) eventPrint << "     selected";
