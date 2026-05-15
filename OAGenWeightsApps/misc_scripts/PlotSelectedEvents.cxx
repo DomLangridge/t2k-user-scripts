@@ -15,6 +15,14 @@ void PlotSelectedEvents() {
   std::string inputFileName = "/home/dlangrid/scratch/Splines/UpgradeTests/HL5.9_SplineTest_makeND280SystSplinesOutput.root";
   TFile *inputFile = TFile::Open(inputFileName.c_str());
 
+  // Open (hardcoded) output files
+  std::string outputFileName = "SelectedEventPlots.root";
+  std::string eventPrintName = "SelectedEvents.out";
+
+  TFile *outputFile = new TFile(outputFileName.c_str(), "recreate");
+  ofstream eventPrint;
+  eventPrint.open(eventPrintName.c_str());
+
   // Get tree & branches for sample_sum
   TTree *sample_sum = (TTree *)inputFile->Get("sample_sum");
 
@@ -55,18 +63,10 @@ void PlotSelectedEvents() {
   TH1D *hist_HATmu = new TH1D("hist_HATmu", "HATmu;CosThetamu;", 100, -1, 1);
   TH1D *hist_SFGmu = new TH1D("hist_SFGmu", "SFGmu;CosThetamu;", 100, -1, 1);
 
-  // Open (hardcoded) output files
-  std::string outputFileName = "SelectedEventPlots.root";
-  std::string eventPrintName = "SelectedEvents.out";
-
-  TFile *outputFile = new TFile(outputFileName.c_str(), "recreate");
   hist_All->SetDirectory(outputFile);
   hist_TPCmu->SetDirectory(outputFile);
   hist_HATmu->SetDirectory(outputFile);
   hist_SFGmu->SetDirectory(outputFile);
-
-  ofstream eventPrint;
-  eventPrint.open(eventPrintName.c_str());
 
   // Loop over entries
   for (uint i=0; i<sample_sum->GetEntries(); i++) {
