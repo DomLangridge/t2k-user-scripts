@@ -18,12 +18,14 @@ void PlotSelectedEvents() {
   // Get tree & branches for sample_sum
   TTree *sample_sum = (TTree *)inputFile->Get("sample_sum");
 
+  Double_t Pmu;
   Double_t CosThetamu;
   Int_t SelectedSample;
   Char_t isConsecutiveIdenticalEvent;
   Int_t EventNumber;
   Int_t TruthVtx;
   
+  sample_sum->SetBranchAddress("Pmu", &Pmu);
   sample_sum->SetBranchAddress("CosThetamu", &CosThetamu);
   sample_sum->SetBranchAddress("SelectedSample", &SelectedSample);
   sample_sum->SetBranchAddress("isConsecutiveIdenticalEvent", &isConsecutiveIdenticalEvent);
@@ -92,12 +94,14 @@ void PlotSelectedEvents() {
     } else {
       entriesInEvent++;
     }
-    eventPrint << "     Entry = " << i;
-    eventPrint << "     Bunch = " << Bunch;
-    eventPrint << "     nTrueVtx = " << sNTrueVertices;
-    eventPrint << "     TruthVtx = " << TruthVtx;
-    eventPrint << "     isCIE = " << bool(isConsecutiveIdenticalEvent);
-    eventPrint << "     Sample = " << SelectedSample;
+    eventPrint << "  Entry=" << i;
+    eventPrint << "  Pmu=" << Pmu;
+    eventPrint << "  CosThetamu=" << CosThetamu;
+    eventPrint << "  Bunch=" << Bunch;
+    eventPrint << "  nTrueVtx=" << sNTrueVertices;
+    eventPrint << "  TruthVtx=" << TruthVtx;
+    eventPrint << "  isCIE=" << bool(isConsecutiveIdenticalEvent);
+    eventPrint << "  Sample=" << SelectedSample;
     if (selected) eventPrint << "     selected";
     eventPrint << std::endl;
     if (i == (sample_sum->GetEntries()-1)) eventPrint << "Entries in event = " << entriesInEvent << std::endl;
