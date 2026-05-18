@@ -32,6 +32,9 @@ void PlotSelectedEvents() {
   Char_t isConsecutiveIdenticalEvent;
   Int_t EventNumber;
   Int_t TruthVtx;
+  Double_t FluxWeight;
+  Double_t DetNomWeight;
+  Double_t XsecNomWeight;
   
   sample_sum->SetBranchAddress("Pmu", &Pmu);
   sample_sum->SetBranchAddress("CosThetamu", &CosThetamu);
@@ -39,6 +42,9 @@ void PlotSelectedEvents() {
   sample_sum->SetBranchAddress("isConsecutiveIdenticalEvent", &isConsecutiveIdenticalEvent);
   sample_sum->SetBranchAddress("EventNumber", &EventNumber);
   sample_sum->SetBranchAddress("TruthVtx", &TruthVtx);
+  sample_sum->SetBranchAddress("FluxWeight", &FluxWeight);
+  sample_sum->SetBranchAddress("DetNomWeight", &DetNomWeight);
+  sample_sum->SetBranchAddress("XsecNomWeight", &XsecNomWeight);
 
   // Get tree & branches for flattree
   TTree *flattree = (TTree *)inputFile->Get("flattree");
@@ -85,6 +91,9 @@ void PlotSelectedEvents() {
       sample_sum->GetEntry(i);
     }
 
+    // Calculate total weight
+    Double_t TotalWeight = FluxWeight * DetNomWeight * XsecNomWeight;
+
     // Print entry to .out file
     if (EventNumber != currentEvent) {
       if (currentEvent != -999) eventPrint << "Entries in event = " << entriesInEvent << std::endl;
@@ -102,6 +111,7 @@ void PlotSelectedEvents() {
     eventPrint << "  TruthVtx=" << TruthVtx;
     eventPrint << "  isCIE=" << bool(isConsecutiveIdenticalEvent);
     eventPrint << "  Sample=" << SelectedSample;
+    eventPrint << "  TotalWeight=" << TotalWeight;
     if (selected) eventPrint << "     selected";
     eventPrint << std::endl;
     if (i == (sample_sum->GetEntries()-1)) eventPrint << "Entries in event = " << entriesInEvent << std::endl;
