@@ -24,6 +24,8 @@
 //
 //    I might look into expanding this to have it as an actual ND280 script for OAGenWeightsApps, by looking through a given
 //    systematics config file and then printing each one (also warning of any that can't / don't have a print function)
+//
+//   (Comment on the above - I've realised makeND280SystSplines actually already does this lol)
 
 void PrintPsycheSystematic() {
 
