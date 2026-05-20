@@ -133,6 +133,7 @@ Parameters to control Detector Variation Systematics
  < psycheSteering.Variations.EnableECalMomResol               = 1 >
  < psycheSteering.Variations.EnableHATPID                     = 1 > // Upgrade
  < psycheSteering.Variations.EnableMomBiasSfg                 = 1 > // Upgrade
+ < psycheSteering.Variations.EnableSFGdEdxMVAMomResol         = 1 > // Upgrade
 -------------------------------------------------------------
 Parameters to control Detector Weight Systematics
 
@@ -165,7 +166,9 @@ Parameters to control Detector Weight Systematics
  < psycheSteering.Weights.EnableFGDECalSMRDMatchEff   = 1 >
  < psycheSteering.Weights.EnableFGDECalMatchEff       = 1 >
  < psycheSteering.Weights.EnableMuonPIDTrackerECalMVA = 0 > // RHC    photon
+
  < psycheSteering.Weights.EnableSFGdEdxMVAPID         = 1 > // Upgrade
+ < psycheSteering.Weights.EnableSFGMETagEff           = 1 > // Upgrade
  < psycheSteering.Weights.EnableSFGMass               = 1 > // Upgrade
  < psycheSteering.Weights.EnableSFGTrackEff           = 1 > // Upgrade
  < psycheSteering.Weights.EnableTOFTrackEff           = 1 > // Upgrade
