@@ -8,9 +8,9 @@
 SFT_DIR=/home/dlangrid/sft
 
 OAGW_BRANCH_NAME="develop"
+OAGWDEPS_HIGHLAND_VERSION=3.22.4
 OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
-OAGWDEPS_HIGHLAND_VERSION=3.22.4
 OAGWDEPS_T2KReWeight_VERSION=24.12
 
 echo "-------------------------------------------------------------------------------------"
@@ -18,9 +18,9 @@ echo "Sourcing OAGenWeightsApps and dependencies"
 echo "-------------------------------------------------------------------------------------"
 echo "Version Control:"
 echo "  OAGW:      $OAGW_BRANCH_NAME"
+echo "  HighLAND2: $OAGWDEPS_HIGHLAND_VERSION"
 echo "  NEUT:      $OAGWDEPS_NEUT_VERSION"
 echo "  NIWGRW:    $OAGWDEPS_NIWGReWeight_VERSION"
-echo "  HighLAND2: $OAGWDEPS_HIGHLAND_VERSION"
 echo "  T2KRW:     $OAGWDEPS_T2KReWeight_VERSION"
 echo "-------------------------------------------------------------------------------------"
 
@@ -34,10 +34,6 @@ cd ${SFT_DIR}
 export ROOT_ROOT=$ROOTSYS
 export ROOT_DIR=$ROOTSYS
 
-source ${SFT_DIR}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/$BUILD_DIR_NEUT/Linux/setup.sh
-
-source ${SFT_DIR}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
-
 cd ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/nd280SoftwarePilot
 ./configure.sh
 source nd280SoftwarePilot.profile
@@ -45,9 +41,13 @@ source nd280SoftwarePilot.profile
 cd ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/highland2SoftwarePilot
 source highland2SoftwarePilot.profile
 
-source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/psycheMaster_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
-source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
-source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/oaAnalysisReader_*/Linux-AlmaLinux_9.6-gcc_12-x86_64/setup.sh
+source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/psycheMaster_*/$(nd280-system)/setup.sh
+source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/$(nd280-system)/setup.sh
+source ${SFT_DIR}/HighLAND2/HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}/oaAnalysisReader_*/$(nd280-system)/setup.sh
+
+source ${SFT_DIR}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/$BUILD_DIR_NEUT/Linux/setup.sh
+
+source ${SFT_DIR}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
 
 source ${SFT_DIR}/T2KReWeight/T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}/$BUILD_DIR_T2KRW/Linux/bin/setup.T2K.sh
 
