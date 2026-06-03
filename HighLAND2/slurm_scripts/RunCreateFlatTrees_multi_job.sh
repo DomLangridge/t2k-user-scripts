@@ -32,40 +32,32 @@ eval date
 cd ${OAGenWeightsApps_DIR}
 source setup_OAGenWeightsApps.sh
 
+FLATTREE_FILE=""
+
 if [ ! -f "$FLATTREE_DIR" ]; then
   echo "Input is not a file: will treat it as a directory of files"
-
+  FILELIST=($FLATTREE_DIR/*)
+  FLATTREE_FILE=${FILELIST[$SLURM_ARRAY_TASK_ID]}
+  if [ $SLURM_ARRAY_TASK_ID -ge ${#FILELIST[@]} ]; then
+    echo "Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#INPUT_FILES[@]}")"
+    echo "Other jobs probably finished fine, but I'll exit this one"
+    exit 1
+  fi
 else
   echo "Input is a single file: if you've run this as a multi job, we'll only run the 0th instance"
   if [ $SLURM_ARRAY_TASK_ID != 0 ]; then
     echo "  Task ID = $SLURM_ARRAY_TASK_ID -> exiting job"
     exit 0
+  fi
+  FLATTREE_FILE=$FLATTREE_DIR
 fi
 
-cd $FLATTREE_DIR/$SUBFOLDER
-INPUT_FILES=(*)
-# OUTPUT_NAME=PsycheThrows_${SUBFOLDER}_${SLURM_ARRAY_TASK_ID}.root
-OUTPUT_NAME=PsycheThrows_${INPUT_FILES[$SLURM_ARRAY_TASK_ID]}
+OUTPUT_FILE=$OUTPUT_DIR/$(basename ${FLATTREE_FILE})
 
-if [ $SLURM_ARRAY_TASK_ID -ge ${#INPUT_FILES[@]} ]; then
-  echo "Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#INPUT_FILES[@]}")"
-  echo "Other jobs probably finished fine, but I'll exit this one"
-  exit 1
-fi
+echo "Running RunCreateFlatTrees"
+echo "  File:           $FLATTREE_FILE"
+echo "  Outputting to   $OUTPUT_FILE"
 
-echo "Running RunSystBinCorr : "$SUBFOLDER"_"$SLURM_ARRAY_TASK_ID
-echo "  From "${INPUT_FILES[$SLURM_ARRAY_TASK_ID]}
-echo "  To   "$OUTPUT_NAME
-
-if [ -d "$OUTPUT_DIR/RunSystBinCorr/$SUBFOLDER" ]; then
-  echo "  Directory "$OUTPUT_DIR"/RunSystBinCorr/"$SUBFOLDER" already exists"
-else
-  echo "  Creating "$OUTPUT_DIR"/RunSystBinCorr/"$SUBFOLDER
-  mkdir $OUTPUT_DIR"/RunSystBinCorr/"$SUBFOLDER
-fi
-
-cd ${Psyche_DIR}
-
-Linux-Rocky_8.10-gcc_12-x86_64/bin/RunSystBinCorr.exe -i ${FLATTREE_DIR}/${SUBFOLDER}/${INPUT_FILES[$SLURM_ARRAY_TASK_ID]} -o ${OUTPUT_DIR}/RunSystBinCorr/$SUBFOLDER/${OUTPUT_NAME}
+RunCreateFlatTrees -i $FLATTREE_FILE -o $OUTPUT_FILE
 
 }
