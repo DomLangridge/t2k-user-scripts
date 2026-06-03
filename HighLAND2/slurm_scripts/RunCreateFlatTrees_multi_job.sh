@@ -6,7 +6,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --output=logs/%x/%x_%j_%a.out
-#SBATCH --array=0-99
+#SBATCH --array=0
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
@@ -19,8 +19,10 @@
 OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps
 
 # Flattree input and output directories
-FLATTREE_DIR=/home/dlangrid/scratch/FlatTrees/Prod7E/highland2Master_3.19/sand/P7V14
-OUTPUT_DIR=/home/dlangrid/scratch/NDinputs/NDCov/v11_MpiMSDialFix/Sand
+FLATTREE_DIR=/home/dlangrid/scratch/Flattrees/ND280_Upgrade/HL5.16/flattrees_neut_mc_v17_hl5.16
+OUTPUT_DIR=/home/dlangrid/scratch/Flattrees/ND280_Upgrade/HL5.16/500NMaxParticles
+
+OUTPUT_TAG=500NMP
 
 # --- RUN JOB ---
 
@@ -52,7 +54,7 @@ else
   FLATTREE_FILE=$FLATTREE_DIR
 fi
 
-OUTPUT_FILE=$OUTPUT_DIR/$(basename ${FLATTREE_FILE})
+OUTPUT_FILE=$OUTPUT_DIR/$(basename ${FLATTREE_FILE%.*})_$OUTPUT_TAG.root
 
 echo "Running RunCreateFlatTrees"
 echo "  File:           $FLATTREE_FILE"
