@@ -2,6 +2,10 @@
 
 A repository for me to keep the various scripts and things that I tend to use:
 
+### HighLAND2
+
+`HighLAND2/misc_scripts` - Any scripts I've used for HighLAND or PSyChE related things
+
 ### MaCh3
 
 `MaCh3_T2K/slurm_scripts` - Slurm job submission scripts for MaCh3 T2K
@@ -10,6 +14,10 @@ A repository for me to keep the various scripts and things that I tend to use:
 
 `MaCh3_T2K/misc_scripts` - Any other scripts I've used for MaCh3 T2K related things
 
+### NextCloud
+
+Scripts for uploading to / downloading from NextCloud. You'll need to add a valid username/password to the file before you can run it.
+
 ### OAGenWeightsApps
 
 `OAGenWeightsApps/setup_scripts` - Scripts for installing, building, and setting up OAGenWeightsApps and its dependencies
@@ -17,10 +25,6 @@ A repository for me to keep the various scripts and things that I tend to use:
 `OAGenWeightsApps/slurm_scripts` - Slurm job submission scripts for OAGenWeightsApps
 
 `OAGenWeightsApps/misc_scripts` - Any other scripts I've used for OAGenWeightsApps and/or T2K OA ND upgrade related things
-
-### NextCloud
-
-Scripts for uploading to / downloading from NextCloud. You'll need to add a valid username/password to the file before you can run it.
 
 ### Useful_Temp_Files
 
