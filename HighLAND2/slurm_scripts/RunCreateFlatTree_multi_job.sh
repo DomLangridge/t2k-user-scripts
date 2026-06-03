@@ -5,7 +5,7 @@
 #SBATCH --mem=16G
 #SBATCH --time=1:00:00
 #SBATCH --cpus-per-task=8
-#SBATCH --output=logs/%x/%x_%j_%a.out
+#SBATCH --output=logs/%x/%x_%a.out
 #SBATCH --array=0
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
