@@ -16,9 +16,10 @@
 # --- JOB CONFIG ---
 
 # OAGenWeightsApps directory
-OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps
+OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
 
 # Flattree input and output directories
+# If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
 FLATTREE_DIR=/home/dlangrid/scratch/Flattrees/ND280_Upgrade/HL5.16/flattrees_neut_mc_v17_hl5.16
 OUTPUT_DIR=/home/dlangrid/scratch/Flattrees/ND280_Upgrade/HL5.16/500NMaxParticles
 
@@ -40,11 +41,19 @@ if [ ! -f "$FLATTREE_DIR" ]; then
   echo "Input is not a file: will treat it as a directory of files"
   FILELIST=($FLATTREE_DIR/*)
   FLATTREE_FILE=${FILELIST[$SLURM_ARRAY_TASK_ID]}
+
   if [ $SLURM_ARRAY_TASK_ID -ge ${#FILELIST[@]} ]; then
-    echo "Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#INPUT_FILES[@]}")"
-    echo "Other jobs probably finished fine, but I'll exit this one"
+    echo "WARNING: Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#INPUT_FILES[@]}")"
+    echo "         Other jobs probably finished fine, but I'll exit this one"
     exit 1
   fi
+
+  if [ ${FLATTREE_FILE##*.} -ne "root" ]; then
+    echo "ERROR: File is not a root file"
+    echo "       Exiting script"
+    exit 1
+  fi
+  
 else
   echo "Input is a single file: if you've run this as a multi job, we'll only run the 0th instance"
   if [ $SLURM_ARRAY_TASK_ID != 0 ]; then
