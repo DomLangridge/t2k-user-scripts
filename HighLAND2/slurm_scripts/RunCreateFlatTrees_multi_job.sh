@@ -53,7 +53,7 @@ if [ ! -f "$FLATTREE_DIR" ]; then
     echo "       Exiting script"
     exit 1
   fi
-  
+
 else
   echo "Input is a single file: if you've run this as a multi job, we'll only run the 0th instance"
   if [ $SLURM_ARRAY_TASK_ID != 0 ]; then
@@ -65,10 +65,10 @@ fi
 
 OUTPUT_FILE=$OUTPUT_DIR/$(basename ${FLATTREE_FILE%.*})_$OUTPUT_TAG.root
 
-echo "Running RunCreateFlatTrees"
+echo "Running RunCreateFlatTree.exe"
 echo "  File:           $FLATTREE_FILE"
 echo "  Outputting to   $OUTPUT_FILE"
 
-RunCreateFlatTrees -i $FLATTREE_FILE -o $OUTPUT_FILE
+RunCreateFlatTree.exe -i $FLATTREE_FILE -o $OUTPUT_FILE
 
 }
