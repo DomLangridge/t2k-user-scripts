@@ -4,6 +4,8 @@ A repository for me to keep the various scripts and things that I tend to use:
 
 ### HighLAND2
 
+`HighLAND2/slurm_scripts` - Slurm job submission scripts for HighLAND / PSyChE
+
 `HighLAND2/misc_scripts` - Any scripts I've used for HighLAND or PSyChE related things
 
 ### MaCh3
