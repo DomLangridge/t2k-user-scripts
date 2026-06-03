@@ -69,6 +69,6 @@ echo "Running RunCreateFlatTree.exe"
 echo "  File:           $FLATTREE_FILE"
 echo "  Outputting to   $OUTPUT_FILE"
 
-RunCreateFlatTree.exe -i $FLATTREE_FILE -o $OUTPUT_FILE
+RunCreateFlatTree.exe $FLATTREE_FILE -o $OUTPUT_FILE
 
 }
