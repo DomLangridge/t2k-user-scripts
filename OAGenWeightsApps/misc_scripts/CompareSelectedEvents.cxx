@@ -137,7 +137,7 @@ void CompareSelectedEvents() {
         eventPrint << "Entry=" << i << ", Spill=" << SS_EventNumber << ", Bunch=" << FT_Bunch << ", Sample=" << SS_SelectedSample << std::endl;
       }
     } else {
-      std::cout << "OAGW entry " << i << "not selected" << std::endl;
+      std::cout << "OAGW entry " << i << " not selected" << std::endl;
     }
   }
 
@@ -192,7 +192,7 @@ void CompareSelectedEvents() {
         eventPrint << "Entry=" << i << ", Spill=" << AT_evt << ", Bunch=" << AT_bunch << ", Sample=" << AT_sample << std::endl;
       }
     } else {
-      std::cout << "HL entry " << i << "not selected" << std::endl;
+      std::cout << "HL entry " << i << " not selected" << std::endl;
     }
   }
 
