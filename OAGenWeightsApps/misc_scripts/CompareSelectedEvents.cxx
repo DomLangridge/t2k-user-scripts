@@ -105,6 +105,7 @@ void CompareSelectedEvents() {
     // Try to find the same entry in the HL file (this is very inefficient and I hate it)
     if (selected == true) {
       bool matched = false;
+      uint j = 0;
       while ((AT_evt <= SS_EventNumber) && (j<anaTree->GetEntries()) ) {
         anaTree->GetEntry(j);
         if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
