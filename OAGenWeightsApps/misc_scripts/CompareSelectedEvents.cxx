@@ -9,13 +9,13 @@
 //     Most of this can be done simply with TTree::Draw(), but some selections may require applying cuts based on
 //     later events, which I don't think can be done with this method? So I'm doing it here
 
-void PlotSelectedEvents() {
+void CompareSelectedEvents() {
 
   // Open (hardcoded) input files
-  std::string OAGWinputFileName = "/home/dlangrid/scratch/Output_OAGenWeightsApps/UpgradeTests/HL5.16/AllFlatTrees/Output_combineND280Splines_HL5.16_500NMP.root";
+  std::string OAGWinputFileName = "/Users/dominiclangridge/T2K/OA_ND_Upgrade/Spline_Validation/HL5.16/AllFlatTrees/Output_combineND280Splines_HL5.16_500NMP.root";
   TFile *OAGWinputFile = TFile::Open(OAGWinputFileName.c_str());
 
-  std::string HighLANDinputFileName = "/home/dlangrid/scratch/Output_OAGenWeightsApps/UpgradeTests/HL5.16/AllFlatTrees/Output_UpgradeNumuCCAnalysis_HL5.16.root";
+  std::string HighLANDinputFileName = "/Users/dominiclangridge/T2K/OA_ND_Upgrade/Spline_Validation/HL5.16/AllFlatTrees/Output_UpgradeNumuCCAnalysis_HL5.16.root";
   TFile *HighLANDinputFile = TFile::Open(HighLANDinputFileName.c_str());
 
   // Open (hardcoded) output file
@@ -103,7 +103,7 @@ void PlotSelectedEvents() {
     }
 
     // Try to find the same entry in the HL file (this is very inefficient and I hate it)
-    if (selected = true) {
+    if (selected == true) {
       bool matched = false;
       for (uint j=0; j<=anaTree->GetEntries(); j++) {
         anaTree->GetEntry(j);
@@ -133,7 +133,7 @@ void PlotSelectedEvents() {
     }
 
     // Try to find the same entry in the OAGW file (this is very inefficient and I hate it)
-    if (selected = true) {
+    if (selected == true) {
       bool matched = false;
       for (uint j=0; j<=sample_sum->GetEntries(); j++) {
         sample_sum->GetEntry(j);
@@ -151,6 +151,6 @@ void PlotSelectedEvents() {
 }
 
 int main() {
-  PlotSelectedEvents();
+  CompareSelectedEvents();
   return 0;
 }
