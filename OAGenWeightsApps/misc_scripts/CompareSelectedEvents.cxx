@@ -136,8 +136,6 @@ void CompareSelectedEvents() {
   // Loop over HL entries
   for (uint i=0; i<anaTree->GetEntries(); i++) {
 
-    selected = false;
-
     anaTree->GetEntry(i);
 
     // Skip entries with incorrect accum_level
