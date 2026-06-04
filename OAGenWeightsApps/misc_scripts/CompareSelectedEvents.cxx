@@ -27,34 +27,20 @@ void CompareSelectedEvents() {
   // Get tree & branches for OAGW sample_sum
   TTree *sample_sum = (TTree *)OAGWinputFile->Get("sample_sum");
 
-  Double_t SS_Pmu;
-  Double_t SS_CosThetamu;
   Int_t SS_SelectedSample;
   Char_t SS_isConsecutiveIdenticalEvent;
   Int_t SS_EventNumber;
-  Int_t SS_TruthVtx;
-  Double_t SS_FluxWeight;
-  Double_t SS_DetNomWeight;
-  Double_t SS_XsecNomWeight;
   
-  sample_sum->SetBranchAddress("Pmu", &SS_Pmu);
-  sample_sum->SetBranchAddress("CosThetamu", &SS_CosThetamu);
   sample_sum->SetBranchAddress("SelectedSample", &SS_SelectedSample);
   sample_sum->SetBranchAddress("isConsecutiveIdenticalEvent", &SS_isConsecutiveIdenticalEvent);
   sample_sum->SetBranchAddress("EventNumber", &SS_EventNumber);
-  sample_sum->SetBranchAddress("TruthVtx", &SS_TruthVtx);
-  sample_sum->SetBranchAddress("FluxWeight", &SS_FluxWeight);
-  sample_sum->SetBranchAddress("DetNomWeight", &SS_DetNomWeight);
-  sample_sum->SetBranchAddress("XsecNomWeight", &SS_XsecNomWeight);
 
   // Get tree & branches for psyche flattree
   TTree *flattree = (TTree *)OAGWinputFile->Get("flattree");
 
   Int_t FT_Bunch;
-  Int_t FT_sNTrueVertices;
 
   flattree->SetBranchAddress("Bunch", &FT_Bunch);
-  flattree->SetBranchAddress("sNTrueVertices", &FT_sNTrueVertices);
 
   // Make them friends :)
   sample_sum->AddFriend("flattree");
@@ -62,22 +48,14 @@ void CompareSelectedEvents() {
   // Get tree & branches for HighLAND ana
   TTree *anaTree = (TTree *)HighLANDinputFile->Get("ana");
 
-  Float_t AT_selmu_mom;
-  Float_t AT_selmu_direction2;
   Int_t AT_evt;
-  Int_t AT_entry;
   Int_t AT_sample;
   Int_t AT_bunch;
-  Int_t AT_TruthVertexID;
   Int_t AT_accum_level;
 
-  anaTree->SetBranchAddress("selmu_mom", &AT_selmu_mom);
-  anaTree->SetBranchAddress("selmu_direction2", &AT_selmu_direction2);
   anaTree->SetBranchAddress("evt", &AT_evt);
-  anaTree->SetBranchAddress("entry", &AT_entry);
   anaTree->SetBranchAddress("sample", &AT_sample);
   anaTree->SetBranchAddress("bunch", &AT_bunch);
-  anaTree->SetBranchAddress("TruthVertexID", &AT_TruthVertexID);
   anaTree->SetBranchAddress("accum_level", &AT_accum_level);
 
   // Do some text file formatting
