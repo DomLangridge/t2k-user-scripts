@@ -105,12 +105,17 @@ void CompareSelectedEvents() {
     // Try to find the same entry in the HL file (this is very inefficient and I hate it)
     if (selected == true) {
       bool matched = false;
-      for (uint j=0; j<=anaTree->GetEntries(); j++) {
+      while ((AT_evt <= SS_EventNumber) && (j<anaTree->GetEntries()) ) {
         anaTree->GetEntry(j);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) matched = true;
+        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+          std::cout << "Found OAGW event " << i << " in the HL file" << std::endl;
+          matched = true;
+          break;
+        }
       }
       // If we didn't find it, print it
       if (!matched) {
+        std::cout << "Didn't find OAGW event " << i << " in the HL file" << std::endl;
         eventPrint << "Entry=" << i << ", Spill=" << SS_EventNumber << ", Bunch=" << FT_Bunch << ", Sample=" << SS_SelectedSample << std::endl;
       }
     }
@@ -135,12 +140,18 @@ void CompareSelectedEvents() {
     // Try to find the same entry in the OAGW file (this is very inefficient and I hate it)
     if (selected == true) {
       bool matched = false;
-      for (uint j=0; j<=sample_sum->GetEntries(); j++) {
+      uint j = 0;
+      while ((SS_EventNumber <= AT_evt) && (j<sample_sum->GetEntries()) ) {
         sample_sum->GetEntry(j);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) matched = true;
+        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+          std::cout << "Found HL event " << i << " in the OAGW file" << std::endl;
+          matched = true;
+          break;
+        }
       }
       // If we didn't find it, print it
       if (!matched) {
+        std::cout << "Didn't find HL event " << i << " in the OAGW file" << std::endl;
         eventPrint << "Entry=" << i << ", Spill=" << AT_evt << ", Bunch=" << AT_bunch << ", Sample=" << AT_sample << std::endl;
       }
     }
