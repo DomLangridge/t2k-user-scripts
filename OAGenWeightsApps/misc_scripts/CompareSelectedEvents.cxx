@@ -62,8 +62,8 @@ void CompareSelectedEvents() {
   // Get tree & branches for HighLAND ana
   TTree *anaTree = (TTree *)HighLANDinputFile->Get("ana");
 
-  Double_t AT_selmu_mom;
-  Double_t AT_selmu_direction2;
+  Float_t AT_selmu_mom;
+  Float_t AT_selmu_direction2;
   Int_t AT_evt;
   Int_t AT_entry;
   Int_t AT_sample;
