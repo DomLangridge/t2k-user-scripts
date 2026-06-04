@@ -5,9 +5,8 @@
 #include "TFile.h"
 #include "TTree.h"
 
-// DL: This script is for checking the selected events in OAGW spline files (i.e. outputs from makeND280SystSplines)
-//     Most of this can be done simply with TTree::Draw(), but some selections may require applying cuts based on
-//     later events, which I don't think can be done with this method? So I'm doing it here
+// DL: This script is an incredibly slow script for comparing event rates between OAGW and HighLAND outputs
+//     I hate it beyond measure
 
 void CompareSelectedEvents() {
 
