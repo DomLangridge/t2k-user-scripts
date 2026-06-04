@@ -102,21 +102,38 @@ void CompareSelectedEvents() {
       selected = false;
     }
 
-    // Try to find the same entry in the HL file (this is very inefficient and I hate it)
+    // Try to find the same entry in the HL file
     if (selected == true) {
       bool matched = false;
-      uint j = 0;
-      while ((AT_evt <= SS_EventNumber) && (j<anaTree->GetEntries()) ) {
-        anaTree->GetEntry(j);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
-          std::cout << "Found OAGW event " << i << " in the HL file" << std::endl;
-          matched = true;
-          break;
+
+      for (uint j=0; j<=anaTree->GetEntries; j++) {
+        // Search outward from the event number
+        int high = i + j;
+        int low = i - j;
+        if ( (low < 0) && (high >= anaTree->GetEntries()) ) break;
+
+        if ( high < anaTree->GetEntries()) {
+          anaTree->GetEntry(high);
+          if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+            std::cout << "Found OAGW entry " << i << " in the HL file (" << high << ")" << std::endl;
+            matched = true;
+            break;
+          }
         }
+
+        if ( (low >= 0) && (high != low) ) {
+          anaTree->GetEntry(low);
+          if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+            std::cout << "Found OAGW entry " << i << " in the HL file (" << low << ")" << std::endl;
+            matched = true;
+            break;
+          }
+        }
+  
       }
       // If we didn't find it, print it
       if (!matched) {
-        std::cout << "Didn't find OAGW event " << i << " in the HL file" << std::endl;
+        std::cout << "Didn't find OAGW entry " << i << " in the HL file" << std::endl;
         eventPrint << "Entry=" << i << ", Spill=" << SS_EventNumber << ", Bunch=" << FT_Bunch << ", Sample=" << SS_SelectedSample << std::endl;
       }
     }
@@ -138,21 +155,38 @@ void CompareSelectedEvents() {
       selected = true;
     }
 
-    // Try to find the same entry in the OAGW file (this is very inefficient and I hate it)
+    // Try to find the same entry in the OAGW file
     if (selected == true) {
       bool matched = false;
-      uint j = 0;
-      while ((SS_EventNumber <= AT_evt) && (j<sample_sum->GetEntries()) ) {
-        sample_sum->GetEntry(j);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
-          std::cout << "Found HL event " << i << " in the OAGW file" << std::endl;
-          matched = true;
-          break;
+
+      for (uint j=0; j<=sample_sum->GetEntries; j++) {
+        // Search outward from the event number
+        int high = i + j;
+        int low = i - j;
+        if ( (low < 0) && (high >= sample_sum->GetEntries()) ) break;
+
+        if ( high < sample_sum->GetEntries()) {
+          sample_sum->GetEntry(high);
+          if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+            std::cout << "Found HL entry " << i << " in the OAGW file (" << high << ")" << std::endl;
+            matched = true;
+            break;
+          }
         }
+
+        if ( (low >= 0) && (high != low) ) {
+          sample_sum->GetEntry(low);
+          if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+            std::cout << "Found HL entry " << i << " in the OAGW file (" << low << ")" << std::endl;
+            matched = true;
+            break;
+          }
+        }
+  
       }
       // If we didn't find it, print it
       if (!matched) {
-        std::cout << "Didn't find HL event " << i << " in the OAGW file" << std::endl;
+        std::cout << "Didn't find HL entry " << i << " in the OAGW file" << std::endl;
         eventPrint << "Entry=" << i << ", Spill=" << AT_evt << ", Bunch=" << AT_bunch << ", Sample=" << AT_sample << std::endl;
       }
     }
