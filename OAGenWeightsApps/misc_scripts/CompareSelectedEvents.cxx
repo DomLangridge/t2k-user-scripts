@@ -105,7 +105,7 @@ void CompareSelectedEvents() {
 
       if ( high < anaTree->GetEntries()) {
         anaTree->GetEntry(high);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+        if ( (AT_evt == SS_EventNumber) && (AT_bunch == FT_Bunch) ) {
           std::cout << "Found OAGW entry " << i << " in the HL file (" << high << ")" << std::endl;
           matched = true;
           break;
@@ -114,7 +114,7 @@ void CompareSelectedEvents() {
 
       if ( (low >= 0) && (high != low) ) {
         anaTree->GetEntry(low);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+        if ( (AT_evt == SS_EventNumber) && (AT_bunch == FT_Bunch) ) {
           std::cout << "Found OAGW entry " << i << " in the HL file (" << low << ")" << std::endl;
           matched = true;
           break;
@@ -155,7 +155,7 @@ void CompareSelectedEvents() {
 
       if ( high < sample_sum->GetEntries()) {
         sample_sum->GetEntry(high);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+        if ( (AT_evt == SS_EventNumber) && (AT_bunch == FT_Bunch) ) {
           std::cout << "Found HL entry " << i << " in the OAGW file (" << high << ")" << std::endl;
           matched = true;
           break;
@@ -164,7 +164,7 @@ void CompareSelectedEvents() {
 
       if ( (low >= 0) && (high != low) ) {
         sample_sum->GetEntry(low);
-        if ( (AT_evt == SS_EventNumber) && (AT_bunch = FT_Bunch) ) {
+        if ( (AT_evt == SS_EventNumber) && (AT_bunch == FT_Bunch) ) {
           std::cout << "Found HL entry " << i << " in the OAGW file (" << low << ")" << std::endl;
           matched = true;
           break;
