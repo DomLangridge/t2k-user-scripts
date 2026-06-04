@@ -106,7 +106,7 @@ void CompareSelectedEvents() {
     if (selected == true) {
       bool matched = false;
 
-      for (uint j=0; j<=anaTree->GetEntries; j++) {
+      for (uint j=0; j<=anaTree->GetEntries(); j++) {
         // Search outward from the event number
         int high = i + j;
         int low = i - j;
@@ -159,7 +159,7 @@ void CompareSelectedEvents() {
     if (selected == true) {
       bool matched = false;
 
-      for (uint j=0; j<=sample_sum->GetEntries; j++) {
+      for (uint j=0; j<=sample_sum->GetEntries(); j++) {
         // Search outward from the event number
         int high = i + j;
         int low = i - j;
