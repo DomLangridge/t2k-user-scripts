@@ -11,13 +11,22 @@
 
 ------- Flux Weighting -------
 
- < psycheND280Utils.FluxWeighting.Folder            = $(PSYCHEND280UTILSROOT)/data/tuned23av1 >
- < psycheND280Utils.FluxWeighting.Version           = tuned23av1_13anom >
- < psycheND280Utils.FluxWeighting.VersionUpgrade    = tuned23av1_23anom >
- < psycheND280Utils.FluxWeighting.Tuning            = tuned23a >
+ < psycheND280Utils.FluxWeighting.Folder            = $(PSYCHEND280UTILSROOT)/data/25av1_release >
+ < psycheND280Utils.FluxWeighting.Version           = 25a >
+ < psycheND280Utils.FluxWeighting.VersionUpgrade    = 25a >
+ < psycheND280Utils.FluxWeighting.Tuning            = tuned_run_over_13a_nom >
+ < psycheND280Utils.FluxWeighting.TuningUpgrade     = tuned_run_over_25a_nom >
  < psycheND280Utils.FluxWeighting.Binning           = nominal_stdbins >
  < psycheND280Utils.FluxWeighting.ApplyBanffWeights = 0 >
  < psycheND280Utils.FluxWeighting.BanffWeightsFile  = flux_fgd_postfit_2026 >
+
+ < psycheND280Utils.FluxWeighting.NomWeightFolder  = None >
+ < psycheND280Utils.FluxWeighting.NomWeightFolderUpgrade = 25av1_nominal_23a_ratio >
+ < psycheND280Utils.FluxWeighting.NomWeightVersion = None >
+ < psycheND280Utils.FluxWeighting.NomWeightVersionUpgrade = 25a >
+ < psycheND280Utils.FluxWeighting.NomWeightHist = None >
+ < psycheND280Utils.FluxWeighting.NomWeightHistUpgrade = untuned_25a >
+
 
 
 ------- Proton SI -------
@@ -41,7 +50,7 @@
 ------- Geometry -------
 
 --- Use the default geometry file even if the input file contains geometry
- < psycheND280Utils.Geometry.UseDefaultGeometry = 1 > // DL: Need to enable this when running in OAGW
+ < psycheND280Utils.Geometry.UseDefaultGeometry = 1 >
  
 --- Geometry files of nd280 software are downloaded at the setup stage and
 --- stored at data/Geometry -- they can be used here so have the right geometry
