@@ -9,12 +9,12 @@ export ROOT_DIR=$ROOTSYS
 
 # Version Control
 
-OAGW_BRANCH=develop
+OAGW_BRANCH=ND280_Upgrade_Dev
 OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
-OAGWDEPS_HIGHLAND_VERSION=3.22.4
-OAGW_DIR_NAME="blarb"
+OAGWDEPS_HIGHLAND_VERSION=5.20
+OAGW_DIR_NAME="UpgradeDev"
 
 echo "-------------------------------------------------------------------------------------"
 echo "Cloning OAGenWeights and dependencies into: OAGenWeightsApps_$OAGW_DIR_NAME"
@@ -40,7 +40,7 @@ else
   echo "========================================"
   echo "Cloning OAGenWeightsApps"
   echo "========================================"
-  git clone --branch ${OAGW_BRANCH} --single-branch https://${GITHUB_TOKEN}@github.com:/t2k-software/OAGenWeightsApps.git OAGenWeightsApps_${OAGW_DIR_NAME}
+  git clone --branch ${OAGW_BRANCH} https://${GITHUB_TOKEN}@github.com:/t2k-software/OAGenWeightsApps.git OAGenWeightsApps_${OAGW_DIR_NAME}
 fi
 
 

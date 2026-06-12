@@ -8,8 +8,8 @@ export ROOT_DIR=$ROOTSYS
 
 # build options
 
-build_neut=false
-build_niwgrw=false
+build_neut=true
+build_niwgrw=true
 build_highland=true
 build_t2krw=true
 build_oagw=true
@@ -21,8 +21,8 @@ build_clean=true
 OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
-OAGWDEPS_HIGHLAND_VERSION=3.22.4
-OAGW_DIR_NAME="blarb"
+OAGWDEPS_HIGHLAND_VERSION=5.20
+OAGW_DIR_NAME="UpgradeDev"
 
 export ND280PROD=prod8_V17
 
@@ -42,53 +42,10 @@ echo "--------------------------------------------------------------------------
 BUILD_DIR_NEUT=build
 BUILD_DIR_NIWGRW=build_with_NEUT${OAGWDEPS_NEUT_VERSION}
 BUILD_DIR_T2KRW=build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
-BUILD_DIR_OAGW=build
+BUILD_DIR_OAGW=build_HL${OAGWDEPS_HIGHLAND_VERSION}
 
 
 # ----- build -----
-
-# NEUT
-if [ $build_neut == "true" ]; then
-  echo "========================================"
-  echo "Building NEUT"
-  echo "========================================"
-  cd ${DL_SFT}/NEUT
-  cd NEUT_${OAGWDEPS_NEUT_VERSION}
-  mkdir $BUILD_DIR_NEUT
-  cd $BUILD_DIR_NEUT
-  ../src/configure --prefix=$(readlink -f Linux) --enable-builtin-cernlib
-  if [ $build_clean == "true" ]; then
-    make clean
-  fi
-  make -j8
-  make install
-fi
-
-# If this fails, check the neut github for install steps and troubleshooting
-
-source ${DL_SFT}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/$BUILD_DIR_NEUT/Linux/setup.sh
-
-
-# NIWGReWeight (NEUT dependency)
-
-if [ $build_niwgrw == "true" ]; then
-  echo "========================================"
-  echo "Building NIWGReWeight"
-  echo "========================================"
-  cd ${DL_SFT}/NIWGReWeight
-  cd NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}
-  mkdir $BUILD_DIR_NIWGRW
-  cd $BUILD_DIR_NIWGRW
-  cmake ../
-  if [ $build_clean == "true" ]; then
-    make clean
-  fi
-  make -j8
-  make install
-fi
-
-source ${DL_SFT}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
-
 
 # HighLAND2
 
@@ -154,6 +111,49 @@ source highland2SoftwarePilot.profile
 source ${ND280_ROOT}/psycheMaster_*/$(nd280-system)/setup.sh
 source ${ND280_ROOT}/highland2Master_${OAGWDEPS_HIGHLAND_VERSION}/$(nd280-system)/setup.sh
 source ${ND280_ROOT}/oaAnalysisReader_*/$(nd280-system)/setup.sh
+
+
+# NEUT
+if [ $build_neut == "true" ]; then
+  echo "========================================"
+  echo "Building NEUT"
+  echo "========================================"
+  cd ${DL_SFT}/NEUT
+  cd NEUT_${OAGWDEPS_NEUT_VERSION}
+  mkdir $BUILD_DIR_NEUT
+  cd $BUILD_DIR_NEUT
+  ../src/configure --prefix=$(readlink -f Linux) --enable-builtin-cernlib
+  if [ $build_clean == "true" ]; then
+    make clean
+  fi
+  make -j8
+  make install
+fi
+
+# If this fails, check the neut github for install steps and troubleshooting
+
+source ${DL_SFT}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/$BUILD_DIR_NEUT/Linux/setup.sh
+
+
+# NIWGReWeight (NEUT dependency)
+
+if [ $build_niwgrw == "true" ]; then
+  echo "========================================"
+  echo "Building NIWGReWeight"
+  echo "========================================"
+  cd ${DL_SFT}/NIWGReWeight
+  cd NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}
+  mkdir $BUILD_DIR_NIWGRW
+  cd $BUILD_DIR_NIWGRW
+  cmake ../
+  if [ $build_clean == "true" ]; then
+    make clean
+  fi
+  make -j8
+  make install
+fi
+
+source ${DL_SFT}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
 
 
 # T2KReWeight (NIWGReWeight [NEUT] & HighLAND2 dependency)
