@@ -9,20 +9,11 @@
 // DL: This script is for checking for duplicate events in highland flattrees, which is helpful for debugging.
 //     The checked branches can be expanded, and it should be fairly easy to update this with other checks, more flattrees, etc.
 
-void CheckDuplicateEvents() {
+void RunEventLoop(std::string flattreeFileName, std::string outputFile, bool checkAllEvents) {
 
-  // Switch to check all events
-  bool checkAllEvents = false;
-
-  // Open (hardcoded) input file
-  std::string flattreeFileName = "/home/dlangrid/scratch/Flattrees/HL5.9/flattrees_p8v17_neut_mc_run_91320000_hl5.9.root";
+  // Open input file
   TFile *flattreeFile = TFile::Open(flattreeFileName.c_str());
-
-  // Open (hardcoded) output file
-  ofstream outputFile;
-  if (checkAllEvents) { outputFile.open("CheckAllEvents.out"); }
-  else { outputFile.open("CheckDuplicateEvents.out"); }
-
+  
   // Get tree & branches
   TTree *flattree = (TTree *)flattreeFile->Get("flattree");
 
@@ -79,11 +70,84 @@ void CheckDuplicateEvents() {
       outputFile << "  Entry = " << entryList[j] << ", sNTrueVertices = " << nTrueVerticesList[j] << ", Bunch = " << BunchList[j] << std::endl; 
     }
   }
+}
+
+void CheckDuplicateEvents(std::string input, std::string outputFileName, bool checkAllEvents=false) {
+
+  std::cout << "INFO: Using input " << input << std::endl;
+
+  // Check if input is file or list of files - for now input is hardcoded but we can change that later :)
+  bool fileList;
+  std::string fileExt = input.substr(input.find_last_of(".") + 1);
+
+  if (fileExt == "root") {
+    std::cout << "INFO: Looks like this is a single root file" << std::endl;
+    fileList = false;
+
+  } else if (fileExt == "txt" || fileExt == "list") {
+    std::cout << "INFO: Looks like this might be a list of files" << std::endl;
+    fileList = true;
+
+  } else {
+    std::cout << "ERROR: I don't know what kind of file this is and I'm scared" << std::endl;
+    throw;
+  }
+
+  // Open output file
+  ofstream outputFile;
+  utputFile.open(outputFileName.c_str());
+
+  // If using file as input, run loop over the file
+  if (!fileList) {
+    std::cout << "INFO: Running loop over single input file" << std::endl;
+    RunEventLoop(input, outputFile, checkAllEvents);
+
+  // If using file list as input, run loop over each entry one at a time
+  } else {
+    std::cout << "INFO: Running loop over each file listed in input" << std::endl;
+    std::ifstream fileList(input.c_str());
+
+    std::string flattreeFileName;
+
+    if (fileList.is_open()) {
+
+      // Get each file line by line
+      int listEntry = 0;
+      while (std::getline(fileList, flattreeFileName)) {
+
+        // Check if the file is a .root file
+        if (flattreeFileName.substr(flattreeFileName.find_last_of(".") + 1) != "root") {
+          std::cout << "WARN: List entry " << listEntry << " is not a root file -> skipping entry" << std::endl;
+          continue;
+        }
+
+        // Run the loop if everything is file
+        RunEventLoop(flattreeFileName, outputFile, checkAllEvents);
+      }
+      fileList.close();
+
+    // Throw an error if the file list can't be opened
+    } else {
+      std::cerr << "ERROR: Unable to open file" << std::endl;
+      throw;
+    }
+  }
 
   outputFile.close();
 }
 
 int main() {
-  CheckDuplicateEvents();
+
+  std::string input = "/home/dlangrid/flattrees/HL5.9/flattrees_p8v17_neut_mc_run_91320000_hl5.9.root";
+
+  bool checkAllEvents = true;
+
+  std::string outputFileName;
+  if (checkAllEvents) outputFileName = "CheckAllEvents.out";
+  else outputFileName = "CheckDuplicateEvents.out";
+
+  CheckDuplicateEvents(input, outputFileName, checkAllEvents);
+
   return 0;
+
 }
