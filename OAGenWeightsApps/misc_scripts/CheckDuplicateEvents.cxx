@@ -9,7 +9,7 @@
 // DL: This script is for checking for duplicate events in highland flattrees, which is helpful for debugging.
 //     The checked branches can be expanded, and it should be fairly easy to update this with other checks, more flattrees, etc.
 
-void RunEventLoop(std::string flattreeFileName, std::string outputFile, bool checkAllEvents) {
+void RunEventLoop(std::string flattreeFileName, std::ofstream& outputFile, bool checkAllEvents) {
 
   // Open input file
   TFile *flattreeFile = TFile::Open(flattreeFileName.c_str());
@@ -72,7 +72,14 @@ void RunEventLoop(std::string flattreeFileName, std::string outputFile, bool che
   }
 }
 
-void CheckDuplicateEvents(std::string input, std::string outputFileName, bool checkAllEvents=false) {
+void CheckDuplicateEvents(std::string input = "/home/dlangrid/flattrees/HL5.9/flattrees_p8v17_neut_mc_run_91320000_hl5.9.root",
+                          std::string outputFileName = "",
+                          bool checkAllEvents=false) {
+
+  if (outputFileName == "") {
+    if (checkAllEvents) outputFileName = "CheckAllEvents.out";
+    else outputFileName = "CheckDuplicateEvents.out";
+  }
 
   std::cout << "INFO: Using input " << input << std::endl;
 
@@ -94,8 +101,8 @@ void CheckDuplicateEvents(std::string input, std::string outputFileName, bool ch
   }
 
   // Open output file
-  ofstream outputFile;
-  utputFile.open(outputFileName.c_str());
+  std::ofstream outputFile;
+  outputFile.open(outputFileName.c_str());
 
   // If using file as input, run loop over the file
   if (!fileList) {
@@ -137,17 +144,6 @@ void CheckDuplicateEvents(std::string input, std::string outputFileName, bool ch
 }
 
 int main() {
-
-  std::string input = "/home/dlangrid/flattrees/HL5.9/flattrees_p8v17_neut_mc_run_91320000_hl5.9.root";
-
-  bool checkAllEvents = true;
-
-  std::string outputFileName;
-  if (checkAllEvents) outputFileName = "CheckAllEvents.out";
-  else outputFileName = "CheckDuplicateEvents.out";
-
-  CheckDuplicateEvents(input, outputFileName, checkAllEvents);
-
+  CheckDuplicateEvents();
   return 0;
-
 }
