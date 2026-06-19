@@ -42,7 +42,7 @@ void RunEventLoop(std::string flattreeFileName, std::ofstream& outputFile, bool 
 
       // Print info
       if ( (entryList.size() > 1) || (checkAllEvents) ) {
-        outputFile << "Event: " << entryList[0] << " (" << entryList.size() << " entries)" << std::endl;
+        outputFile << "Event: " << currentEvent << " (" << entryList.size() << " entries)" << std::endl;
         for (uint j=0; j<entryList.size(); j++) {
           outputFile << "  Entry = " << entryList[j] << ", sNTrueVertices = " << nTrueVerticesList[j] << ", Bunch = " << BunchList[j] << std::endl; 
         }
@@ -52,11 +52,12 @@ void RunEventLoop(std::string flattreeFileName, std::ofstream& outputFile, bool 
       entryList.clear();
       nTrueVerticesList.clear();
       BunchList.clear();
-      
+
+      // Set new current event
+      currentEvent = sEvt;
     }
 
     // Store current entry info
-    currentEvent = sEvt;
     entryList.push_back(i);
     nTrueVerticesList.push_back(sNTrueVertices);
     BunchList.push_back(Bunch);
