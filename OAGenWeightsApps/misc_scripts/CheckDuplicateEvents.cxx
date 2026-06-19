@@ -72,13 +72,13 @@ void RunEventLoop(std::string flattreeFileName, std::ofstream& outputFile, bool 
   }
 }
 
-void CheckDuplicateEvents(std::string input = "/home/dlangrid/flattrees/HL5.9/flattrees_p8v17_neut_mc_run_91320000_hl5.9.root",
+void CheckDuplicateEvents(std::string input = "/scratch/dlangrid/flattrees/HL5.20/FileList_flattrees_neut_mc_HL5.20.txt",
                           std::string outputFileName = "",
                           bool checkAllEvents=false) {
 
   if (outputFileName == "") {
-    if (checkAllEvents) outputFileName = "CheckAllEvents.out";
-    else outputFileName = "CheckDuplicateEvents.out";
+    if (checkAllEvents) outputFileName = "CheckAllEvents_HL5.20.out";
+    else outputFileName = "CheckDuplicateEvents_HL5.20.out";
   }
 
   std::cout << "INFO: Using input " << input << std::endl;
@@ -129,7 +129,9 @@ void CheckDuplicateEvents(std::string input = "/home/dlangrid/flattrees/HL5.9/fl
         }
 
         // Run the loop if everything is file
+        std::cout << "INFO: Running over file " << listEntry << " - " << flattreeFileName << std::endl;
         RunEventLoop(flattreeFileName, outputFile, checkAllEvents);
+        listEntry++;
       }
       fileList.close();
 
