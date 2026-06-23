@@ -5,40 +5,33 @@
 #SBATCH --mem=16G
 #SBATCH --time=0-03:59
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=0-139
+#SBATCH --array=0-59
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
-# Ewan's script to combine steps 1 and 2 (and psyche throws!) of spline generation
-# Relies on .txt file lists, but is *significantly* quicker than my scripts
+# Modification fo Ewan's script to combine steps 1 and 2 (and psyche throws!) of spline generation
 #
-# Total amount of jobs required for MC (1206) is larger than slurm allows
-# Therefore submit job twice:
-# First: 0-899
-# Second: 900-1205
-#
-# For Sand, just use 0-299
-
-# 0 - 139 for 2a & 5 MC only
+# WARNING: Max limit of slurm jobs is 900 (0-899)
+#          If you have more files, you may have to run this multiple times
 
 echo Job started at $HOSTNAME
 eval date
 echo
 
-INPUT_LOC=/home/dlangrid/scratch/ND280_Inputs/FlatTrees/Prod7E/v4_newSystCorrections/with_corrections/
-FILE_LIST=($(< ${INPUT_LOC}/../filenames_MC.txt))
-# FILE_LIST=($(< ${INPUT_LOC}/../filenames_Data.txt))
+INPUT_LOC=/scratch/dlangrid/flattrees/HL5.21/converted_from_HL5.20/
+cd $INPUT_LOC
+FILE_LIST=(*.root)
 
-OUTPUT_LOC=/home/dlangrid/scratch/Outputs_OAGenWeightsApps/Prod7E/v13Test_HadronicW_2a_5/
+OUTPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL5.21/
 
-OAGW_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps
-# NDGENWEIGHTS_CONFIG=${OAGW_DIR}/app/Configs/2024/ND280_OA2024_Config_NoMirroring.toml
-NDGENWEIGHTS_CONFIG=${OAGW_DIR}/app/Configs/2024/ND280_OA2024_Config_Mirroring.toml
-DETSPLINE_CONFIG=${OAGW_DIR}/app/Configs/2024/NDSyst_OA2024Selections.toml
+OAGW_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
 
-XSEC_OUTPUT_LOC=$OUTPUT_LOC/Xsec_Weighted/
-ND_OUTPUT_LOC=$OUTPUT_LOC/NDS_and_Xsec_Weighted/
-# THROW_OUTPUT_LOC=$OUTPUT_LOC/ToyThrows/
+NDGENWEIGHTS_CONFIG=${OAGW_DIR}/app/Configs/ND280_Upgrade/ND280_Upgrade_Config_NoMirroring.toml
+DETSPLINE_CONFIG=${OAGW_DIR}/app/Configs/ND280_Upgrade/app/Configs/ND280_Upgrade/NDSyst_UpgradeSelections.toml
+
+XSEC_OUTPUT_LOC=$OUTPUT_LOC/ND280GenWeights/
+ND_OUTPUT_LOC=$OUTPUT_LOC/makeND280SystSplines/
+THROW_OUTPUT_LOC=$OUTPUT_LOC/throwPsycheSplineToys/
 
 FILE=${FILE_LIST[${SLURM_ARRAY_TASK_ID}]}
 
@@ -49,10 +42,10 @@ if [ ! -f "$INPUT_LOC/$FILE" ]; then
   exit 1
 fi
 
-OUTFILE_PATH=${FILE%/*}
-RUN_SUBDIR=$(basename ${OUTFILE_PATH})
-XSEC_OUTPUT_NAME=$OUTFILE_PATH/XSec_Weighted_${RUN_SUBDIR}_${SLURM_ARRAY_TASK_ID}.root
-ND_OUTPUT_NAME=$OUTFILE_PATH/NDS_and_XSec_Weighted_${RUN_SUBDIR}_${SLURM_ARRAY_TASK_ID}.root
+XSEC_OUTPUT_NAME=Output_ND280GenWeights_HL${OAGWDEPS_HIGHLAND_VERSION}_${SLURM_ARRAY_TASK_ID}.root
+ND_OUTPUT_NAME=Output_makeND280SystSplines_HL${OAGWDEPS_HIGHLAND_VERSION}_${SLURM_ARRAY_TASK_ID}.root
+THROW_OUTPUT_NAME=Output_throwPsycheSplineToys_HL${OAGWDEPS_HIGHLAND_VERSION}_${SLURM_ARRAY_TASK_ID}.root
+
 
 echo "=============================="
 echo ""
@@ -62,7 +55,7 @@ echo ""
 echo "Info: will outputs to"
 echo "$XSEC_OUTPUT_LOC/$XSEC_OUTPUT_NAME"
 echo "$ND_OUTPUT_LOC/$ND_OUTPUT_NAME"
-# echo "$THROW_OUTPUT_LOC/$FILE"
+echo "$THROW_OUTPUT_LOC/$THROW_OUTPUT_NAME"
 echo ""
 echo "=============================="
 
@@ -78,7 +71,7 @@ fi
 
 echo "=====> Running ND280GenWeights <====="
 ND280GenWeights -i $INPUT_LOC/$FILE -o $XSEC_OUTPUT_LOC/$XSEC_OUTPUT_NAME -c $NDGENWEIGHTS_CONFIG
-# ND280GenWeights -i $INPUT_LOC/$FILE -o $XSEC_OUTPUT_LOC/$XSEC_OUTPUT_NAME -c $NDGENWEIGHTS_CONFIG -t 2000
+echo "=====> Finished ND280GenWeights <====="
 
 
 # ----- makeND280SystSplines -----
@@ -88,10 +81,18 @@ if [ -f $ND_OUTPUT_LOC/$ND_OUTPUT_NAME ]; then
   rm $ND_OUTPUT_LOC/$ND_OUTPUT_NAME
 fi
 
-echo "=====> Runing makeND280SystSplines<====="
+echo "=====> Running makeND280SystSplines <====="
 makeND280SystSplines -i $XSEC_OUTPUT_LOC/$XSEC_OUTPUT_NAME -o $ND_OUTPUT_LOC/$ND_OUTPUT_NAME -c $DETSPLINE_CONFIG
+echo "=====> Finished makeND280SystSplines <====="
 
 
 # ----- throwPsycheSplineToys -----
 
-# throwPsycheSplineToys -i $ND_OUTPUT_LOC$FILE -o $THROW_OUTPUT_LOC$FILE -c $DETSPLINE_CONFIG
+if [ -f $THROW_OUTPUT_LOC/$THROW_OUTPUT_NAME ]; then
+  echo "output '$THROW_OUTPUT_LOC/$THROW_OUTPUT_NAME' already exists -> removing before running"
+  rm $THROW_OUTPUT_LOC/$THROW_OUTPUT_NAME
+fi
+
+echo "=====> Running throwPsycheSplineToys <====="
+throwPsycheSplineToys -i $ND_OUTPUT_LOC/$ND_OUTPUT_NAME -o $THROW_OUTPUT_LOC/$THROW_OUTPUT_NAME -c $DETSPLINE_CONFIG
+echo "=====> Finished throwPsycheSplineToys <====="
