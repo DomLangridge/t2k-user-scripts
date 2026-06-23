@@ -19,8 +19,8 @@ OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_Upgrad
 
 # Flattree input and output directories
 # If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
-INPUT=/scratch/dlangrid/flattrees/HL5.20/FileList_flattrees_neut_mc_HL5.20.txt
-OUTPUT=/scratch/dlangrid/UpgradeValidations/HL5.20/Output_UpgradeNumuCCAnalysis_HL5.20.root
+INPUT=/scratch/dlangrid/flattrees/HL5.21/FlatTreeList_HL5.21_converted_from_HL5.20.txt
+OUTPUT=/scratch/dlangrid/UpgradeValidations/HL5.21/Output_UpgradeNumuCCAnalysis_HL5.21.root
 
 # --- RUN JOB ---
 
@@ -35,6 +35,11 @@ source setup_OAGenWeightsApps.sh
 echo "Running RunUpgradeNumuCCAnalysis.exe"
 echo "  Input:  $INPUT"
 echo "  Output: $OUTPUT"
+
+if [ -f $OUTPUT ]; then
+  echo "WARNING: '$OUTPUT' already exists -> removing before running"
+  rm $OUTPUT
+fi
 
 RunUpgradeNumuCCAnalysis.exe $INPUT -o $OUTPUT
 
