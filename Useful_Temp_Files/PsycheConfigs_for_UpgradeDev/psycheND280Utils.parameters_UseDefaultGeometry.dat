@@ -95,9 +95,10 @@
  
  < psycheND280Utils.ToF.FGD1FGD2_NoStopFGD1          = 2.  >
 
- < psycheND280Utils.ToF.SFGTOF_HATTipSfg             = 0.  >
+ < psycheND280Utils.ToF.SFGTOF_HATStartSfg           = 0.  >
+ < psycheND280Utils.ToF.SFGTOF_HATEndSfg             = 0.  >
 
- < psycheND280Utils.ToF.FGD1TOF_Track                = 1.  >
+ < psycheND280Utils.ToF.TOFFGD1                      = 1.  >
  
  < psycheND280Utils.ToF.SFG_HATTipSfg.MinNNodes      = 30  >
 
