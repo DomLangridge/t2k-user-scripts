@@ -6,7 +6,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=0
+#SBATCH --array=0-59
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
@@ -18,12 +18,14 @@
 # OAGenWeightsApps directory
 OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
 
+HL_VERSION=5.20
+
 # Flattree input and output directories
 # If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
-FLATTREE_DIR=/home/dlangrid/scratch/Flattrees/ND280_Upgrade/HL5.16/flattrees_neut_mc_v17_hl5.16
-OUTPUT_DIR=/home/dlangrid/scratch/Flattrees/ND280_Upgrade/HL5.16/500NMaxParticles
+FLATTREE_DIR=/scratch/dlangrid/flattrees/HL5.20/flattrees_neut_mc_v17_hl5.20/
+OUTPUT_DIR=/scratch/dlangrid/flattrees/HL5.20/750NMP/
 
-OUTPUT_TAG=500NMP
+OUTPUT_TAG=750NMP
 
 # --- RUN JOB ---
 
@@ -33,7 +35,7 @@ echo Job started at $HOSTNAME
 eval date
 
 cd ${OAGenWeightsApps_DIR}
-source setup_OAGenWeightsApps.sh
+source setup_OAGenWeightsApps.sh -v $HL_VERSION
 
 FLATTREE_FILE=""
 
@@ -68,6 +70,11 @@ OUTPUT_FILE=$OUTPUT_DIR/$(basename ${FLATTREE_FILE%.*})_$OUTPUT_TAG.root
 echo "Running RunCreateFlatTree.exe"
 echo "  File:           $FLATTREE_FILE"
 echo "  Outputting to   $OUTPUT_FILE"
+
+if [ -f $OUTPUT_FILE ]; then
+  echo "output '$OUTPUT_FILE' already exists -> removing before running"
+  rm $OUTPUT_FILE
+fi
 
 RunCreateFlatTree.exe $FLATTREE_FILE -o $OUTPUT_FILE
 
