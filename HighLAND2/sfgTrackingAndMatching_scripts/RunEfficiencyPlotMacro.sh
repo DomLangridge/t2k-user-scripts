@@ -6,7 +6,9 @@ export SYST_PROJECT=$CC_SYSTEMATICS/sfgTrackingAndMatchingSystematics
 cd $CC_SYSTEMATICS
 source DLsetup_sfgTrackingAndMatchingSystematics.sh
 
-OUTPUT_BASENAME=/home/t2k/dlangrid/CC_Systematics/sfgTrackingAndMatchingSystematics/output/HL5.6_P8V17/Plots/Plots_SfgTrackingAndMatching_Highland5.6_P8V17
+OUTPUT_BASENAME=/home/t2k/dlangrid/CC_Systematics/sfgTrackingAndMatchingSystematics/output/HL${HIGHLAND_VERSION}_P${MC_PROD}V${MC_VERS}/Plots/Plots_sfgTM_HL${HIGHLAND_VERSION}_P${MC_PROD}V${MC_VERS}
+
+$OAGW
 
 TITLE_LIST=(
   MC
@@ -14,8 +16,8 @@ TITLE_LIST=(
 )
 
 FILE_LIST=(
-  /home/t2k/dlangrid/CC_Systematics/sfgTrackingAndMatchingSystematics/output/HL5.6_P8V17/Output_SfgTrackingAndMatching_Highland5.6_P8V17_MC_wSand.root
-  /home/t2k/dlangrid/CC_Systematics/sfgTrackingAndMatchingSystematics/output/HL5.6_P8V17/Output_SfgTrackingAndMatching_Highland5.6_P8V17_Data.root
+  /home/t2k/dlangrid/CC_Systematics/sfgTrackingAndMatchingSystematics/output/HL${HIGHLAND_VERSION}_P${MC_PROD}V${MC_VERS}/Output_SfgTrackingAndMatching_Highland${HIGHLAND_VERSION}_P${MC_PROD}V${MC_VERS}_MC_wSand.root
+  /home/t2k/dlangrid/CC_Systematics/sfgTrackingAndMatchingSystematics/output/HL${HIGHLAND_VERSION}_P${MC_PROD}V${MC_VERS}/Output_SfgTrackingAndMatching_Highland${HIGHLAND_VERSION}_P${MC_PROD}V${MC_VERS}_Data.root
 )
 
 PLOT_EFFICIENCY="python ${SYST_PROJECT}/macros/sfgTrackingAndMatchingEffPlots.py -o ${OUTPUT_BASENAME}"
