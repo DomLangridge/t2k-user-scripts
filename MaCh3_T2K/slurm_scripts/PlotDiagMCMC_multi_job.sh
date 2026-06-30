@@ -5,24 +5,26 @@
 #SBATCH --mem=16G
 #SBATCH --time=6:00:00
 #SBATCH --cpus-per-task=8
-#SBATCH --gres=gpu:1
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=0-5
+#SBATCH --array=0-7
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
 echo Job started at $HOSTNAME
 
-export MACH3_DL=/home/dlangrid/MaCh3_T2K/MaCh3_OAR11B
-source ${MACH3_DL}/DLsetup.sh
-cd ${MACH3_DL}/build
+export MACH3_DL=/home/dlangrid/MaCh3_Core/MaCh3Tutorial
+source ${MACH3_DL}/DLsetup.sh -t build_cpu -b 
 
 INPUT=(
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_0_MCMC_Diag.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains/OAR11B_P7E_v12_Data_MCMC_EdTuning_0_MCMC_Diag.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_0_MCMC_Diag.root /home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains/OAR11B_P7E_v12_Data_MCMC_EdTuning_0_MCMC_Diag.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_0_MCMC_Diag.root /home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains_v2/OAR11B_P7E_v12_Data_MCMC_EdTuning_0_MCMC_Diag.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_0_MCMC_Diag.root /home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains/OAR11B_P7E_v12_Data_MCMC_EdTuning_0_MCMC_Diag.root /home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains_v2/OAR11B_P7E_v12_Data_MCMC_EdTuning_0_MCMC_Diag.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_MCMC_Diag.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM_MCMC_Diag.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_BigTuning_MCMC_Diag.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_SmallTuning_MCMC_Diag.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VeryBigTuning_MCMC_Diag.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VerySmallTuning_MCMC_Diag.root"
+#
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM_MCMC_Diag.root 'Well tuned Chain' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_SmallTuning_MCMC_Diag.root 'Small step size' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_BigTuning_MCMC_Diag.root 'large step size'"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM_MCMC_Diag.root 'Well tuned Chain' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VerySmallTuning_MCMC_Diag.root 'Small step size' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VeryBigTuning_MCMC_Diag.root 'large step size'"
 )
 
 ./bin/PlotMCMCDiag ${INPUT[$SLURM_ARRAY_TASK_ID]}

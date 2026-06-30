@@ -2,12 +2,11 @@
 #SBATCH --account=def-blairt2k
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH --mem=120G
-#SBATCH --time=1-12:00:00
+#SBATCH --mem=64G
+#SBATCH --time=23:59:00
 #SBATCH --cpus-per-task=8
-#SBATCH --gres=gpu:1
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=0-1
+#SBATCH --array=7
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
@@ -16,17 +15,24 @@ time -p {
 echo Job started at $HOSTNAME
 eval date
 
-export MACH3_DL=/home/dlangrid/MaCh3_T2K/MaCh3_OA2024
-source ${MACH3_DL}/DLsetup.sh
-cd ${MACH3_DL}/build
+export MACH3_DL=$PWD
+source ${MACH3_DL}/DLsetup.sh -t build_cpu -b
+
+DIAG_CONFIG=bin/TutorialDiagConfig.yaml
 
 CHAINFILE=(
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Asimov/OAR11B_P7E_v12_Asimov_MCMC.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/OAR11B_P7E_v12_Data_MCMC.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/OAR11B_P7E_v12_Data_MCMC.root 'v12 Data' /home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Asimov/OAR11B_P7E_v12_Asimov_MCMC.root 'v12 Asimov'"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_SmallTuning.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_BigTuning.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VerySmallTuning.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VeryBigTuning.root"
+#
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM.root 'Well-tuned Chain' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_SmallTuning.root 'Small step size' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_BigTuning.root 'Large step size'"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM.root 'Well-tuned Chain' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VerySmallTuning.root 'Small step size' /scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VeryBigTuning.root 'Large step size'"
 )
 
-COMMAND="./bin/ProcessMCMC plotting/Diag_Config.yaml "${CHAINFILE[$SLURM_ARRAY_TASK_ID]}
+COMMAND="./bin/ProcessMCMC $DIAG_CONFIG "${CHAINFILE[$SLURM_ARRAY_TASK_ID]}
 
 echo "running: "$COMMAND
 

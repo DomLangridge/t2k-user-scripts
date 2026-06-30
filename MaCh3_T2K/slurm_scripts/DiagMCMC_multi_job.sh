@@ -5,28 +5,26 @@
 #SBATCH --mem=32G
 #SBATCH --time=23:59:59
 #SBATCH --cpus-per-task=8
-#SBATCH --gres=gpu:1
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=2,4
+#SBATCH --array=0-5
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
 echo Job started at $HOSTNAME
 
-export MACH3_DL=/home/dlangrid/MaCh3_T2K/MaCh3_OAR11B
-source ${MACH3_DL}/DLsetup.sh
-cd ${MACH3_DL}/build
+export MACH3_DL=$PWD
+source ${MACH3_DL}/DLsetup.sh -t build_cpu -b
+
+DIAG_CONFIG=bin/TutorialDiagConfig.yaml
 
 CHAINFILE=(
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_0.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains/OAR11B_P7E_v12_Data_MCMC_EdTuning_0.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/EdTuning/Chains_v2/OAR11B_P7E_v12_Data_MCMC_EdTuning_0.root"
-  #
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_1.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_2.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_3.root"
-  "/home/dlangrid/scratch/Chains/Prod7E/v12_Highland_3.22.4/Data/Chains/OAR11B_P7E_v12_Data_MCMC_4.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_AdaptiveRM.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_SmallTuning.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_BigTuning.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VerySmallTuning.root"
+  "/scratch/dlangrid/Chains/MaCh3_Tutorial/MaCh3_Tutorial_MCMC_VeryBigTuning.root"
 
 )
 
-./bin/DiagMCMC ${CHAINFILE[$SLURM_ARRAY_TASK_ID]} plotting/Diag_Config.yaml
+./bin/DiagMCMC ${CHAINFILE[$SLURM_ARRAY_TASK_ID]} $DIAG_CONFIG
