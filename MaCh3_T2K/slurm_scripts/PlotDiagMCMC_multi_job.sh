@@ -12,7 +12,7 @@
 
 echo Job started at $HOSTNAME
 
-export MACH3_DL=/home/dlangrid/MaCh3_Core/MaCh3Tutorial
+export MACH3_DL=$PWD
 source ${MACH3_DL}/DLsetup.sh -t build_cpu -b 
 
 INPUT=(
