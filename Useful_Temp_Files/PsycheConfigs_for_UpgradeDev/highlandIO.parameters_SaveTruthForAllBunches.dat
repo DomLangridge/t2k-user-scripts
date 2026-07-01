@@ -1,0 +1,240 @@
+The line below is needed for doxygen documentation
+//! [highlandIO.parameters.dat_flattree]
+
+
+Set the config manually 
+-1 (less than 0) - read from input,
+if fails to read from input then the one corresponding to the production version
+used to compile highland will be used: e.g. prod8* - ND280Upgrade, prod7* -ND280
+One rarely expects to set manually the flag to the exact production - is kept
+for some debugging purposes
+0 - nd280, 
+1 (more than 0) - upgrade
+ < highlandIO.oaAnalysis.Config = -1 >
+
+Save the Geometry (TGeoManager)
+ < highlandIO.FlatTree.SaveGeometry = 1 >
+ 
+ 
+ 
+ March 2020 - Prod6T sand muons, water out -- whether to set manually POT per spill 
+ and the very POT per spill
+ < highlandIO.oaAnalysis.SetManual_POTPerSpill_Prod6T_WaterOut_Sand = 0 >
+ < highlandIO.oaAnalysis.POTPerSpill_Prod6T_WaterOut_Sand           = 9.4804e13 >
+
+
+
+FGD individual hits info: i.e. setting it to save FGD hits on flat-tree creation
+level and with the oaAnalysis input will automatically force oaAnalysis
+converter to fill the corresponding hits info
+
+ < highlandIO.FlatTree.Read.TimeBins.FGD.FillHits = 0 >
+ < highlandIO.FlatTree.Create.TimeBins.FGD.SaveHits = 0 >
+
+Ignore true vertices that have all true tracks contained in a given subdetector
+ < highlandIO.oaAnalysis.IgnoreSMRDContainedTrueObjects      = 0 >
+ < highlandIO.oaAnalysis.IgnoreDsECalContainedTrueObjects    = 0 >
+ < highlandIO.oaAnalysis.IgnoreBrECalContainedTrueObjects    = 0 >
+ < highlandIO.oaAnalysis.IgnoreP0DECalContainedTrueObjects   = 0 >
+ < highlandIO.oaAnalysis.IgnoreINGRIDContainedTrueObjects    = 0 >
+
+Ignore true vertices with no true tracks
+ < highlandIO.oaAnalysis.RemoveTrueVerticesWithNoTrueParticles  = 1 >
+
+Shuts up the message and stops early exit if
+subsequent files have colliding run numbers.
+ < highlandIO.oaAnalysis.ForceIgnoreRunNumberClash = 0 >
+
+Ignore bad data quality flags due to P0D off T2K run14
+If P0D is the only cause the global DQ will be set to good
+ < highlandIO.oaAnalysis.IgnoreP0DOffInRun14BadDQFlag = 1 >
+
+Controls whether to add single hits into time bins
+ < highlandIO.oaAnalysis.TimeBins.FGD.FillHits = 1 > // FGD
+ < highlandIO.oaAnalysis.TimeBins.SFG.FillHits = 1 > // SFG
+
+Controls whether to add single hit and nodes for SFG objects
+
+ < highlandIO.oaAnalysis.Particles.SFG.FillHits = 1 > 
+ < highlandIO.oaAnalysis.Particles.SFG.FillNodes = 1 > 
+
+
+Controls for oa/eventAnalysis skimming
+
+ < highlandIO.oaAnalysis.CherryPicker.UseTPC = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.UseFGD = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.UseSFG = 1 >
+ < highlandIO.oaAnalysis.CherryPicker.UseHAT = 0 >
+
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.NuNC       = 1 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.AntiNuNC   = 1 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.NumuCC     = 1 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.AntiNumuCC = 1 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.NueCC      = 1 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.AntiNueCC  = 1 >
+
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.TPC1      = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.TPC2      = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.TPC3      = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.FGD1      = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.FGD2      = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.TopHAT    = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.BottomHAT = 0 >
+ < highlandIO.oaAnalysis.CherryPicker.TrueVertex.SFG       = 1 >
+
+
+
+
+
+Overrides all Truth and recon preselection switches. Will still remove recon
+bunches with absolutely nothing in them. ONLY FOR MINITREE
+ < highlandIO.MiniTree.ForceSaveAll = 0 >
+
+Fix global vertex time for ECal global vertices. This cannot be a
+correction as it has to happen before bunching.
+ < highlandIO.oaAnalysis.FixECalGlobalVerticesTime = 0 >
+
+Whether to enable the CT4/CT5 POT correction, and the DQ
+corrections. These must be applied when creating the flat
+tree, so that POT counting is correct. Applying the same
+corrections in baseAnalysis when using FlatTree files as
+input will have no effect. IT IS STRONGLY RECOMMENDED THAT
+YOU KEEP THESE CORRECTIONS ENABLED!
+
+Settings for both flat and mini trees!
+
+ < highlandIO.FlatTree.EnableIgnoreRightECalCorrection       = 1 >
+ < highlandIO.FlatTree.EnablePOTCorrection                   = 1 >
+ < highlandIO.FlatTree.EnableDQCorrection                    = 1 >
+ < highlandIO.FlatTree.EnableTPCdEdxDataCorrection           = 1 >
+ < highlandIO.FlatTree.EnableTPCdEdxMCCorrection             = 1 >
+ < highlandIO.FlatTree.EnableHVTPCExpecteddEdxCorrection     = 1 >
+ < highlandIO.FlatTree.EnableTPCPIDPullMCCorrection          = 1 >
+ < highlandIO.FlatTree.EnableMomResolMCCorrection            = 1 >
+ < highlandIO.FlatTree.EnableFGDPIDPullMCCorrection          = 1 >
+ < highlandIO.FlatTree.EnableFGDPIDCorrection                = 0 >
+ < highlandIO.FlatTree.EnableFlipKinematicsCorrection        = 1 >
+ < highlandIO.FlatTree.EnableToFCorrection                   = 0 >
+ < highlandIO.FlatTree.EnableToFTimeSlipCorrection           = 0 >
+ < highlandIO.FlatTree.EnableMomRangeCorrection              = 0 >
+ < highlandIO.FlatTree.EnableTimeDataQualityCorrection       = 0 >
+ < highlandIO.FlatTree.EnableMuonPIDTrackerECalMVACorrection = 0 >
+ 
+ < highlandIO.FlatTree.EnableSFGdEdxMVACorrection            = 1 >
+ < highlandIO.FlatTree.EnableHATPIDPullMCCorrection          = 1 >
+ < highlandIO.FlatTree.EnableHATdEdxDataCorrection           = 1 > 
+
+Save only true tracks/vertices with recon association
+
+< highlandIO.FlatTree.SaveTruthWithReconAssociation = 0 >
+
+Save true info for all bunches -- may be required for OA ND fitting
+
+< highlandIO.FlatTree.SaveTruthForAllBunches = 1 >
+
+Save RooTracker information, which is needed for doing re-weighting
+with T2KReWeight
+
+ < highlandIO.FlatTree.SaveRooTracker = 1 >
+
+Save only the RooTracker vertices with link in the MiniTree/FlatTree
+ < highlandIO.FlatTree.FilterRooTracker = 1 >
+
+Enable/disable filling subdetector variables
+
+ < highlandIO.FlatTree.SaveSFGInfo     = 1 >
+ < highlandIO.FlatTree.SaveHATInfo     = 1 >
+ < highlandIO.FlatTree.SaveTOFInfo     = 1 >
+ 
+ < highlandIO.FlatTree.SaveTPCInfo     = 1 >
+ < highlandIO.FlatTree.SaveFGDInfo     = 1 >
+ < highlandIO.FlatTree.SaveP0DInfo     = 1 >
+ < highlandIO.FlatTree.SaveECALInfo    = 1 >
+ < highlandIO.FlatTree.SaveSMRDInfo    = 1 >
+ < highlandIO.FlatTree.SaveTrackerInfo = 1 >
+
+Enable/disable the reading and flattening of different oaAnalysis folders
+
+ < highlandIO.FlatTree.UseReconDirTrackerECal = 1 >
+
+Fill the P0DDataClasses
+
+ < highlandIO.P0DDataClasses.UseReconDirP0D               = 0 >           Enable/disable reading the P0DRecon dir and filling P0DDataClasses 
+ < highlandIO.P0DDataClasses.UseReconDirP0DNew            = 0 >           Enable/disable reading the P0DRecon dir and filling the new P0DDataClasses
+ < highlandIO.P0DDataClasses.UseReconDirP0DAlgoResult     = p0dRecon >    Take P0D vertices from this algo result
+ < highlandIO.P0DDataClasses.AddGlobalTracksToP0DVertices = 1 >           Global tracks containing a P0D segments are added to the corresponnding P0D vertex
+
+Preselection based on subdetector components
+
+ < highlandIO.FlatTree.UseSFG    = 1 >
+ < highlandIO.FlatTree.UseHAT    = 0 >
+ < highlandIO.FlatTree.UseTOF    = 0 >
+ 
+ < highlandIO.FlatTree.UseTPC1    = 0 >
+ < highlandIO.FlatTree.UseTPC2    = 0 >
+ < highlandIO.FlatTree.UseTPC3    = 0 >
+ < highlandIO.FlatTree.UseFGD1    = 0 >
+ < highlandIO.FlatTree.UseFGD2    = 0 >
+ < highlandIO.FlatTree.UseP0D     = 0 >
+ < highlandIO.FlatTree.UseDsECal  = 0 >
+ < highlandIO.FlatTree.UseTrECal  = 0 >
+ < highlandIO.FlatTree.UseP0DECal = 0 >
+ < highlandIO.FlatTree.UseSMRD    = 0 >
+
+ < highlandIO.FlatTree.UseSFGoutOfBunch    = 1 >
+ < highlandIO.FlatTree.UseHAToutOfBunch    = 0 >
+ < highlandIO.FlatTree.UseTOFoutOfBunch    = 0 >
+ 
+ < highlandIO.FlatTree.UseTPC1outOfBunch    = 0 >
+ < highlandIO.FlatTree.UseTPC2outOfBunch    = 0 >
+ < highlandIO.FlatTree.UseTPC3outOfBunch    = 0 >
+ < highlandIO.FlatTree.UseFGD1outOfBunch    = 0 >
+ < highlandIO.FlatTree.UseFGD2outOfBunch    = 0 >
+ < highlandIO.FlatTree.UseP0DoutOfBunch     = 0 >
+ < highlandIO.FlatTree.UseDsECaloutOfBunch  = 0 >
+ < highlandIO.FlatTree.UseTrECaloutOfBunch  = 0 >
+ < highlandIO.FlatTree.UseP0DECaloutOfBunch = 0 >
+ < highlandIO.FlatTree.UseSMRDoutOfBunch    = 0 >
+
+
+Preselection based on true interaction type
+
+ < highlandIO.FlatTree.TrueVertex.NuNC        = 1 >
+ < highlandIO.FlatTree.TrueVertex.AntiNuNC    = 1 >
+ < highlandIO.FlatTree.TrueVertex.NumuCC      = 1 >
+ < highlandIO.FlatTree.TrueVertex.AntiNumuCC  = 1 >
+ < highlandIO.FlatTree.TrueVertex.NueCC       = 1 >
+ < highlandIO.FlatTree.TrueVertex.AntiNueCC   = 1 >
+
+Preselection based on true interaction detector
+
+ < highlandIO.FlatTree.TrueVertex.SFG    = 1 >
+ < highlandIO.FlatTree.TrueVertex.HAT    = 0 >
+ < highlandIO.FlatTree.TrueVertex.TOF    = 0 >
+ 
+ < highlandIO.FlatTree.TrueVertex.TPC1    = 0 >
+ < highlandIO.FlatTree.TrueVertex.TPC2    = 0 >
+ < highlandIO.FlatTree.TrueVertex.TPC3    = 0 >
+ < highlandIO.FlatTree.TrueVertex.FGD1    = 0 >
+ < highlandIO.FlatTree.TrueVertex.FGD2    = 0 >
+ < highlandIO.FlatTree.TrueVertex.P0D     = 0 >
+ < highlandIO.FlatTree.TrueVertex.DsECal  = 0 >
+ < highlandIO.FlatTree.TrueVertex.TrECal  = 0 >
+ < highlandIO.FlatTree.TrueVertex.P0DECal = 0 >
+ < highlandIO.FlatTree.TrueVertex.SMRD    = 0 >
+
+Params to control cut on which objects to save
+ < highlandIO.FlatTrees.SFG.MinimumMENNodes = 2 >
+ < highlandIO.FlatTrees.SFG.MaximumMEDistance = 20 >
+
+FLAT TREE READING
+
+Use corrected values or raw values. The FlatTree contains corrected values for the TPC dxdx parameters.
+We can used the corrected values from the FlatTree and not apply the corrections or use the corrected
+values and apply the corrections when running the analysis. We can use the DrawingTools::DumpCorrections() method over the flattree file
+to see what corrections were applied when creating the FlatTree
+
+ < highlandIO.ReadFlatTree.UseCorrectedValues = 1 >
+
+The line below is needed for doxygen documentation
+//! [highlandIO.parameters.dat_flattree]
