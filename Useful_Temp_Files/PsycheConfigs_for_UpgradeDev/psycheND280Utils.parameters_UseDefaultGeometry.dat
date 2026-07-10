@@ -18,7 +18,7 @@
  < psycheND280Utils.FluxWeighting.TuningUpgrade     = tuned_run_over_25a_nom >
  < psycheND280Utils.FluxWeighting.Binning           = nominal_stdbins >
  < psycheND280Utils.FluxWeighting.ApplyBanffWeights = 0 >
- < psycheND280Utils.FluxWeighting.BanffWeightsFile  = flux_fgd_postfit_2026 >
+ < psycheND280Utils.FluxWeighting.BanffWeightsFile  = flux_nd_postfit_OAR11B_250-320kA >
 
  < psycheND280Utils.FluxWeighting.NomWeightFolder  = None >
  < psycheND280Utils.FluxWeighting.NomWeightFolderUpgrade = 25av1_nominal_23a_ratio >
@@ -57,7 +57,7 @@
 --- for the setup
  < psycheND280Utils.Geometry.DefaultGeometryFile.Prod6 = $(PSYCHEND280UTILSROOT)/data/Geometry/v5r1p3-baseline-2010-11_geom-aa7ba9d3-c9bce01d-1965fe02-bb7afdbf-6c35814b.root >
  < psycheND280Utils.Geometry.DefaultGeometryFile.Prod7 = $(PSYCHEND280UTILSROOT)/data/Geometry/v6r3-baseline-2010-11_geom-840f3293-2b5245dc-d98aa3f0-78a5becf-9385351c.root >
- < psycheND280Utils.Geometry.DefaultGeometryFile.Prod8 = $(PSYCHEND280UTILSROOT)/data/Geometry/7.23-baseline-2024_geom-8a337c37-57c9af32-4553ee78-5f44c7e4-e249aac0.root >
+ < psycheND280Utils.Geometry.DefaultGeometryFile.Prod8 = $(PSYCHEND280UTILSROOT)/data/Geometry/7.24-baseline-2024_geom-be80d023-cb02eb33-c24b0f21-f08fc2a4-4860d298.root >
  
 
 --- Use the ROOT geometry to overrride the harcoded values in detectorDefinition (DetDef namespace)
