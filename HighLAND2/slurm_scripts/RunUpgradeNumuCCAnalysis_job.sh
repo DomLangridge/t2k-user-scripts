@@ -3,7 +3,7 @@
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH --mem=16G
-#SBATCH --time=4:00:00
+#SBATCH --time=23:59:00
 #SBATCH --cpus-per-task=8
 #SBATCH --output=logs/%x/%x_%a.out
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
@@ -15,12 +15,14 @@
 # --- JOB CONFIG ---
 
 # OAGenWeightsApps directory
-OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
+OAGenWeightsApps_DIR=$PWD
+
+HIGHLAND_VERSION=5.24
 
 # Flattree input and output directories
 # If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
-INPUT=/scratch/dlangrid/flattrees/HL5.21/FlatTreeList_HL5.21_converted_from_HL5.20.txt
-OUTPUT=/scratch/dlangrid/UpgradeValidations/HL5.21/Output_UpgradeNumuCCAnalysis_HL5.21.root
+INPUT=/scratch/dlangrid/flattrees/HL${HIGHLAND_VERSION}/Lists/FlatTreeList_HL${HIGHLAND_VERSION}_converted_from_HL5.20.txt
+OUTPUT=/scratch/dlangrid/UpgradeValidations/HL${HIGHLAND_VERSION}/Output_UpgradeNumuCCAnalysis_HL${HIGHLAND_VERSION}.root
 
 # --- RUN JOB ---
 
@@ -30,7 +32,7 @@ echo Job started at $HOSTNAME
 eval date
 
 cd ${OAGenWeightsApps_DIR}
-source setup_OAGenWeightsApps.sh
+source setup_OAGenWeightsApps.sh -v ${HIGHLAND_VERSION}
 
 echo "Running RunUpgradeNumuCCAnalysis.exe"
 echo "  Input:  $INPUT"
