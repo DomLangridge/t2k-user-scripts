@@ -196,4 +196,5 @@ ONLY APPLES TO the psycheSteering RunSyst_Bincorr app!
  < psycheSteering.RunSyst.RunOnInidividualSyst = 0 >
  < psycheSteering.RunSyst.RunAllSyst = 1 >
  < psycheSteering.RunSyst.ThrowToys = 1 >
+ < psycheSteering.RunSyst.ToyMaker = 0 > // 0/default - ToyMakerCorrelatedSyst , 1 - ToyMakerIndividualSystMatrices 
  < psycheSteering.RunSyst.CorrelationXMLFile = /macros/correlations.xml >
