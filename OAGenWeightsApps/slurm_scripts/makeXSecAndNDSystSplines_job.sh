@@ -18,16 +18,18 @@ echo Job started at $HOSTNAME
 eval date
 echo
 
-INPUT_LOC=/scratch/dlangrid/flattrees/HL5.21/converted_from_HL5.20/
+OAGW_DIR=$PWD
+
+HL_VERSION=5.25
+
+INPUT_LOC=/scratch/dlangrid/flattrees/HL${HL_VERSION}/converted_from_HL5.20/
 cd $INPUT_LOC
 FILE_LIST=(*.root)
 
-OUTPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL5.21/
-
-OAGW_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
+OUTPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}
 
 NDGENWEIGHTS_CONFIG=${OAGW_DIR}/app/Configs/ND280_Upgrade/ND280_Upgrade_Config_NoMirroring.toml
-DETSPLINE_CONFIG=${OAGW_DIR}/app/Configs/ND280_Upgrade/app/Configs/ND280_Upgrade/NDSyst_UpgradeSelections.toml
+DETSPLINE_CONFIG=${OAGW_DIR}/app/Configs/ND280_Upgrade/NDSyst_UpgradeSelections.toml
 
 XSEC_OUTPUT_LOC=$OUTPUT_LOC/ND280GenWeights/
 ND_OUTPUT_LOC=$OUTPUT_LOC/makeND280SystSplines/
@@ -42,9 +44,9 @@ if [ ! -f "$INPUT_LOC/$FILE" ]; then
   exit 1
 fi
 
-XSEC_OUTPUT_NAME=Output_ND280GenWeights_HL${OAGWDEPS_HIGHLAND_VERSION}_${SLURM_ARRAY_TASK_ID}.root
-ND_OUTPUT_NAME=Output_makeND280SystSplines_HL${OAGWDEPS_HIGHLAND_VERSION}_${SLURM_ARRAY_TASK_ID}.root
-THROW_OUTPUT_NAME=Output_throwPsycheSplineToys_HL${OAGWDEPS_HIGHLAND_VERSION}_${SLURM_ARRAY_TASK_ID}.root
+XSEC_OUTPUT_NAME=Output_ND280GenWeights_HL${HL_VERSION}_${SLURM_ARRAY_TASK_ID}.root
+ND_OUTPUT_NAME=Output_makeND280SystSplines_HL${HL_VERSION}_${SLURM_ARRAY_TASK_ID}.root
+THROW_OUTPUT_NAME=Output_throwPsycheSplineToys_HL${HL_VERSION}_${SLURM_ARRAY_TASK_ID}.root
 
 
 echo "=============================="
@@ -60,7 +62,7 @@ echo ""
 echo "=============================="
 
 cd ${OAGW_DIR}
-source ${OAGW_DIR}/setup_OAGenWeightsApps.sh
+source ${OAGW_DIR}/setup_OAGenWeightsApps.sh -v ${HL_VERSION}
 
 # ----- ND280GenWeights -----
 
