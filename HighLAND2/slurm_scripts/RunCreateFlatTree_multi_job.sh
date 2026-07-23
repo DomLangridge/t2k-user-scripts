@@ -3,7 +3,7 @@
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH --mem=16G
-#SBATCH --time=1:00:00
+#SBATCH --time=2:00:00
 #SBATCH --cpus-per-task=8
 #SBATCH --output=logs/%x/%x_%a.out
 #SBATCH --array=0-59
@@ -16,16 +16,16 @@
 # --- JOB CONFIG ---
 
 # OAGenWeightsApps directory
-OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
+OAGenWeightsApps_DIR=$PWD
 
-HL_VERSION=5.20
+HL_VERSION=5.25
 
 # Flattree input and output directories
 # If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
 FLATTREE_DIR=/scratch/dlangrid/flattrees/HL5.20/flattrees_neut_mc_v17_hl5.20/
-OUTPUT_DIR=/scratch/dlangrid/flattrees/HL5.20/750NMP/
+OUTPUT_DIR=/scratch/dlangrid/flattrees/HL${HL_VERSION}/converted_from_HL5.20/
 
-OUTPUT_TAG=750NMP
+OUTPUT_TAG=converted_to_HL${HL_VERSION}
 
 # --- RUN JOB ---
 
