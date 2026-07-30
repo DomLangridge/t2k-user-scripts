@@ -26,8 +26,8 @@ OAGenWeightsApps_DIR=$PWD
 
 HL_VERSION=5.25.1
 
-INPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/RunSystBinCorr
-OUTPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/genWeightFromPsyche
+INPUT_DIR=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/RunSystBinCorr
+OUTPUT_DIR=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/genWeightFromPsyche
 
 # Config file to use
 CONFIG_FILE=${OAGenWeightsApps_DIR}/app/Configs/ND280_Upgrade/PsycheToy_Upgrade_Config.toml
@@ -39,10 +39,10 @@ time -p {
 echo Job started at $HOSTNAME
 eval date
 
-cd $INPUT_LOC
+cd $INPUT_DIR
 INPUT_FILES=(*)
 
-OUTPUT_NAME=Output_genWeightFromPsyche_HL${HL_VERSION}_${INPUT_FILES[$SLURM_ARRAY_TASK_ID]}.root
+OUTPUT_NAME=NIWGweighted_${INPUT_FILES[$SLURM_ARRAY_TASK_ID]}
 
 if [ $SLURM_ARRAY_TASK_ID -ge ${#INPUT_FILES[@]} ]; then
   echo "Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#INPUT_FILES[@]}")"
@@ -54,16 +54,14 @@ echo "Running genWeightFromPsyche..."
 echo "  From "${INPUT_FILES[$SLURM_ARRAY_TASK_ID]}
 echo "  To   "$OUTPUT_NAME
 
-if [ -d "$OUTPUT_LOC" ]; then
-  echo "  Directory "$OUTPUT_LOC" already exists"
-else
-  echo "  Creating "$OUTPUT_LOC
-  mkdir $OUTPUT_LOC
+if [ -f ${OUTPUT_DIR}/${OUTPUT_NAME} ]; then
+  echo "output '${OUTPUT_DIR}/${OUTPUT_NAME}' already exists -> removing before running"
+  rm ${OUTPUT_DIR}/${OUTPUT_NAME}
 fi
 
 cd ${OAGenWeightsApps_DIR}
 source setup_OAGenWeightsApps.sh -v ${HL_VERSION}
 
-genWeightFromPsyche -i ${INPUT_LOC}/${INPUT_FILES[$SLURM_ARRAY_TASK_ID]} -o ${OUTPUT_LOC}/${OUTPUT_NAME} -c ${CONFIG_FILE}
+genWeightFromPsyche -i ${INPUT_DIR}/${INPUT_FILES[$SLURM_ARRAY_TASK_ID]} -o ${OUTPUT_DIR}/${OUTPUT_NAME} -c ${CONFIG_FILE}
 
 }

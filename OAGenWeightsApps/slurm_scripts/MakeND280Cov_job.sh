@@ -17,32 +17,25 @@
 
 # --- JOB CONFIG ---
 
+HL_VERSION=5.25.1
+
 # OAGenWeightsApps directory
-OAGenWeightsApps_DIR=/home/dlangrid/sft/OAGenWeightsApps
+OAGenWeightsApps_DIR=$PWD
 
-# NDCOV_DIR is general location of ND covariance production
-NDCOV_DIR=/home/dlangrid/scratch/NDinputs/NDCov/v11_MpiMSDialFix/
+PSYCHE_TOYS_DIR=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/RunSystBinCorr
+NIWG_TOYS_DIR=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/genWeightFromPsyche
 
-# MC Toys
-MC_PSYCHE_TOYS_DIR=/home/dlangrid/projects/def-blairt2k/shared/OA2024_Inputs/ND280/CovMatrix/psyche_throws_Highland_3.19/with_corrections/MC/
-MC_NIWG_TOYS_DIR=/home/dlangrid/projects/def-blairt2k/shared/OA2024_Inputs/ND280/CovMatrix/psyche_throws_with_NIWG_Highland_3.19/with_corrections/MC/
-
-# Sand Toys
-SAND_ENABLED=true
-SAND_PSYCHE_TOYS_DIR=/home/dlangrid/scratch/NDinputs/NDCov/v11_MpiMSDialFix/Sand/RunSystBinCorr/
-SAND_NIWG_TOYS_DIR=/home/dlangrid/scratch/NDinputs/NDCov/v11_MpiMSDialFix/Sand/genWeightFromPsyche/
+OUTPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/
 
 # Toys list file
 PSYCHE_TOYS_LIST=${OAGenWeightsApps_DIR}/PsycheToysList.txt
 NIWG_TOYS_LIST=${OAGenWeightsApps_DIR}/NIWGToysList.txt
 
 # Config file to use
-# BINNING_CONFIG=${OAGenWeightsApps_DIR}/app/Configs/2024/ND_Binning_4pi.toml
-BINNING_CONFIG=${OAGenWeightsApps_DIR}/app/Configs/2024/ND_Binning_4pi_SampleBinning.toml
-
+BINNING_CONFIG=${OAGenWeightsApps_DIR}/app/Configs/ND280_Upgrade/ND_Binning_Upgrade.toml
 
 # Output file (without .root suffix)
-OUTPUT_NAME=P7E_v11_NDCovMatrix_withSand_SampleBinning
+OUTPUT_NAME=NDCov_HL${HL_VERSION}
 
 # --- RUN JOB ---
 
@@ -52,7 +45,7 @@ echo Job started at $HOSTNAME
 eval date
 
 cd ${OAGenWeightsApps_DIR}
-source setup_OAGenWeightsApps.sh
+source setup_OAGenWeightsApps.sh -v ${HL_VERSION}
 
 if [ -f "$PSYCHE_TOYS_LIST" ]; then
   echo "Psyche toys: $PSYCHE_TOYS_LIST already exists"
@@ -62,15 +55,8 @@ else
   echo "  -> creating psyche toys list using following toys:"
   touch ${PSYCHE_TOYS_LIST}
 
-  echo "     MC:   $MC_PSYCHE_TOYS_DIR"
-  find ${MC_PSYCHE_TOYS_DIR} -name '*.root' >> ${PSYCHE_TOYS_LIST}
-
-  if [ "$SAND_ENABLED" = true ] ; then
-    echo "     Sand: $SAND_PSYCHE_TOYS_DIR"
-    find ${SAND_PSYCHE_TOYS_DIR} -name '*.root' >> ${PSYCHE_TOYS_LIST}
-  else
-    echo "     (Sand is disabled)"
-  fi
+  echo "  in $PSYCHE_TOYS_DIR"
+  find ${PSYCHE_TOYS_DIR} -name '*.root' >> ${PSYCHE_TOYS_LIST}
 fi
 
 if [ -f "$NIWG_TOYS_LIST" ]; then
@@ -81,17 +67,10 @@ else
   echo "  -> creating NIWG toys list using following toys:"
   touch ${NIWG_TOYS_LIST}
 
-  echo "     MC:   $MC_NIWG_TOYS_DIR"
-  find ${MC_NIWG_TOYS_DIR} -name '*.root' >> ${NIWG_TOYS_LIST}
-
-  if [ "$SAND_ENABLED" = true ] ; then
-    echo "     Sand: $SAND_NIWG_TOYS_DIR"
-    find ${SAND_NIWG_TOYS_DIR} -name '*.root' >> ${NIWG_TOYS_LIST}
-  else
-    echo "     (Sand is disabled)"
-  fi
+  echo "  in $NIWG_TOYS_DIR"
+  find ${NIWG_TOYS_DIR} -name '*.root' >> ${NIWG_TOYS_LIST}
 fi
 
-./app/ND280/MakeND280Cov ${BINNING_CONFIG} ${PSYCHE_TOYS_LIST} ${NIWG_TOYS_LIST} ${NDCOV_DIR}/${OUTPUT_NAME}
+MakeND280Cov ${BINNING_CONFIG} ${PSYCHE_TOYS_LIST} ${NIWG_TOYS_LIST} ${OUTPUT_LOC}/${OUTPUT_NAME}
 
 }

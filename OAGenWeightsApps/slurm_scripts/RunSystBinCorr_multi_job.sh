@@ -28,7 +28,7 @@ OAGenWeightsApps_DIR=$PWD
 # OUTPUT_DIR is general location of ND covariance production and MC / Sand toys
 # FLATTREE_DIR=/home/dlangrid/projects/def-blairt2k/shared/OA2024_Inputs/ND280/FlatTrees/Prod7E/v4_newSystCorrections/with_corrections/MC
 FLATTREE_DIR=/scratch/dlangrid/flattrees/HL5.25.1/converted_from_HL5.20
-OUTPUT_DIR=/scratch/dlangrid/UpgradeValidations/HL5.25.1
+OUTPUT_DIR=/scratch/dlangrid/UpgradeValidations/HL5.25.1/RunSystBinCorr
 
 # --- RUN JOB ---
 
@@ -56,13 +56,11 @@ echo "Running RunSystBinCorr : "$SLURM_ARRAY_TASK_ID
 echo "  From "${INPUT_FILES[$SLURM_ARRAY_TASK_ID]}
 echo "  To   "$OUTPUT_NAME
 
-if [ -d "$OUTPUT_DIR/RunSystBinCorr" ]; then
-  echo "  Directory "$OUTPUT_DIR"/RunSystBinCorr already exists"
-else
-  echo "  Creating "$OUTPUT_DIR"/RunSystBinCorr"
-  mkdir $OUTPUT_DIR"/RunSystBinCorr"
+if [ -f ${OUTPUT_DIR}/${OUTPUT_NAME} ]; then
+  echo "output '${OUTPUT_DIR}/${OUTPUT_NAME}' already exists -> removing before running"
+  rm ${OUTPUT_DIR}/${OUTPUT_NAME}
 fi
 
-RunSystBinCorr.exe -i ${FLATTREE_DIR}/${INPUT_FILES[$SLURM_ARRAY_TASK_ID]} -o ${OUTPUT_DIR}/RunSystBinCorr/${OUTPUT_NAME}
+RunSystBinCorr.exe -i ${FLATTREE_DIR}/${INPUT_FILES[$SLURM_ARRAY_TASK_ID]} -o ${OUTPUT_DIR}/${OUTPUT_NAME}
 
 }
