@@ -15,18 +15,20 @@ echo Job started at $HOSTNAME
 eval date
 echo
 
-OAGW_DIR=/home/dlangrid/sft/OAGenWeightsApps/OAGenWeightsApps_UpgradeDev
+HL_VERSION=5.25.1
 
-INPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL5.21/throwPsycheSplineToys/
+OAGW_DIR=$PWD
 
-OUTPUT_PREFIX=/scratch/dlangrid/UpgradeValidations/HL5.21/plotMultiInd/Output_plotMultiInd_HL5.21_
+INPUT_LOC=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/throwPsycheSplineToys/
+
+OUTPUT_PREFIX=/scratch/dlangrid/UpgradeValidations/HL${HL_VERSION}/plotMultiInd/Output_plotMultiInd_HL5.21_
 
 CONFIG=$OAGW_DIR/app/Configs/ND280_Upgrade/NDSyst_UpgradeSelections.toml
 
 # --- RUN JOB ---
 
 cd ${OAGW_DIR}
-source ${OAGW_DIR}/setup_OAGenWeightsApps.sh -v 5.21
+source ${OAGW_DIR}/setup_OAGenWeightsApps.sh -v ${HL_VERSION}
 
 COMMAND="plotMultiInd -o $OUTPUT_PREFIX -c $CONFIG"
     
