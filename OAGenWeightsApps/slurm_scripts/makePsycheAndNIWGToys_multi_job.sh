@@ -56,8 +56,8 @@ if [ ! -f "$INPUT_LOC/$FILE" ]; then
   exit 1
 fi
 
-if [ $SLURM_ARRAY_TASK_ID -ge ${#INPUT_FILES[@]} ]; then
-  echo "Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#INPUT_FILES[@]}")"
+if [ $SLURM_ARRAY_TASK_ID -ge ${#FILE_LIST[@]} ]; then
+  echo "Slurm array task ID "$SLURM_ARRAY_TASK_ID" larger than needed for number of input files ("${#FILE_LIST[@]}")"
   echo "Other jobs probably finished fine, but I'll exit this one"
   exit 1
 fi
@@ -73,7 +73,7 @@ if [ -f $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME ]; then
 fi
 
 echo "=====> Running RunSystBinCorr <====="
-ND280GenWeights -i $INPUT_LOC/$FILE -o $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME
+RunSystBinCorr -i $INPUT_LOC/$FILE -o $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME
 echo "=====> Finished RunSystBinCorr <====="
 
 # ----- genWeightFromPsyche -----
@@ -84,7 +84,7 @@ if [ -f $GENWEIGHT_OUTPUT_LOC/$GENWEIGHT_OUTPUT_NAME ]; then
 fi
 
 echo "=====> Running genWeightFromPsyche <====="
-ND280GenWeights -i $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME -o $GENWEIGHT_OUTPUT_LOC/$GENWEIGHT_OUTPUT_NAME -c $GENWEIGHT_CONFIG
+genWeightFromPsyche -i $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME -o $GENWEIGHT_OUTPUT_LOC/$GENWEIGHT_OUTPUT_NAME -c $GENWEIGHT_CONFIG
 echo "=====> Finished genWeightFromPsyche <====="
 
 }
