@@ -73,7 +73,7 @@ if [ -f $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME ]; then
 fi
 
 echo "=====> Running RunSystBinCorr <====="
-RunSystBinCorr -i $INPUT_LOC/$FILE -o $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME
+RunSystBinCorr.exe -i $INPUT_LOC/$FILE -o $SYSTBINCORR_OUTPUT_LOC/$SYSTBINCORR_OUTPUT_NAME
 echo "=====> Finished RunSystBinCorr <====="
 
 # ----- genWeightFromPsyche -----
