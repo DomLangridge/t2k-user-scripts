@@ -92,7 +92,7 @@ Parameter to control which run periods selectionsare valid for.
 Look at AnalysisUtils.cxx to find run period numbering - Run period 8 = run 5 anti-neutrino data/MC
 List valid runs using a comma separated string
 
- < psycheSteering.Selections.UpgradeNumuCC.ValidRunPeriods           = 23 >
+ < psycheSteering.Selections.UpgradeNumuCC.ValidRunPeriods           = 4,23 > // 4 is a temp fix to include sand, which currrently has the wrong index
  < psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods           = 0,1,2,3,4,5,6,17,18 >
  < psycheSteering.Selections.TrackerNumuCCMultiPi.ValidRunPeriods    = 0,1,2,3,4,5,6,17,18 >
  < psycheSteering.Selections.TrackerNumuCC4pi.ValidRunPeriods        = 0,1,2,3,4,5,6,17,18 >
