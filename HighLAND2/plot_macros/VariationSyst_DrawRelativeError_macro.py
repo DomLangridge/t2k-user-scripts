@@ -30,7 +30,7 @@ def PlotEventRate(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName="s
   for s,Sample in enumerate(SampleName):
     for v,Var in enumerate(VarName):
 
-      draw.SetTitle(Sample+' '+Var)
+      draw.SetTitleX(Sample+' '+Var)
 
       draw.Draw(mc, Var, BinDef[s][v][0], BinDef[s][v][1], BinDef[s][v][2], 'all', AccumBranch[s]+'>=7')
       
@@ -40,7 +40,7 @@ def PlotEventRate(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName="s
 
   canvas.Print(outName+'.pdf]')
 
-# ==================== PlotEventRate ====================
+# ==================== PlotEventRate2D ====================
 
 def PlotEventRate2D(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName="selmu_mom", BinDef=[[100,0,5000]], outName="blarb"):
 
@@ -60,7 +60,9 @@ def PlotEventRate2D(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName=
     # These need to go "y:x" for some stupid reason
     Var=VarName[1]+':'+VarName[0]
 
-    draw.SetTitle(Sample+' '+Var)
+    draw.SetTitle(Sample)
+    draw.SetTitleX(VarName[0])
+    draw.SetTitleY(VarName[1])
 
     draw.Draw(mc, Var, BinDef[s][0][0], BinDef[s][0][1], BinDef[s][0][2], BinDef[s][1][0], BinDef[s][1][1], BinDef[s][1][2], 'all', AccumBranch[s]+'>=7', "colz")
     
