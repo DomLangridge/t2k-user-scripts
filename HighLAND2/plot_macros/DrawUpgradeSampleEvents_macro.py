@@ -111,6 +111,6 @@ for s,Sample in enumerate(SampleName):
 
 # Make plots
 
-PlotEventRate(SampleName, AccumBranch, VarName, BinDef, "DrawingTools_test_PlotEventRate")
+PlotEventRate(SampleName, AccumBranch, VarName, BinDef, "UpgradeNumuCCSelection_PlotEventRate")
 
-PlotEventRate2D(SampleName, AccumBranch, VarName, BinDef, "DrawingTools_test_PlotEventRate2D")
+PlotEventRate2D(SampleName, AccumBranch, VarName, BinDef, "UpgradeNumuCCSelection_PlotEventRate2D")
