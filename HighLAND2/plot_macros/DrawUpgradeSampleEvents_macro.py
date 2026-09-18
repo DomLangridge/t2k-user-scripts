@@ -18,6 +18,9 @@ run13.AddDataSample(mc);
 
 exper.AddSampleGroup("run13", run13);
 
+# Options
+saveCanvasAsC = False
+
 # ==================== PlotEventRate ====================
 
 def PlotEventRate(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName="selmu_mom", BinDef=[[100,0,5000]], outName="blarb"):
@@ -36,6 +39,8 @@ def PlotEventRate(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName="s
       
       canvas.Update()
       canvas.Print(outName+'.pdf')
+      if bool(saveCanvasAsC):
+        canvas.Print(outName+'_'+Sample+'_'+Var+'.C')
       canvas.Clear()
 
   canvas.Print(outName+'.pdf]')
@@ -68,6 +73,8 @@ def PlotEventRate2D(SampleName="TPCmu", AccumBranch="accum_level[][0]", VarName=
     
     canvas.Update()
     canvas.Print(outName+'.pdf')
+    if bool(saveCanvasAsC):
+      canvas.Print(outName+'_'+Sample+'_'+VarName[0]+'_'+VarName[1]+'.C')
     canvas.Clear()
 
   canvas.Print(outName+'.pdf]')
