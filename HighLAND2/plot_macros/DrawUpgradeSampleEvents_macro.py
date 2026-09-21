@@ -33,7 +33,7 @@ mc = ROOT.DataSample(args.input)
 run13.AddMCSample("magnet", mc);
 
 if args.sand is not None:
-  sand_mc = Root.DataSample(args.sand)
+  sand_mc = ROOT.DataSample(args.sand)
   run13.AddMCSample("sand", sand_mc);
 
 run13.AddDataSample(mc);
