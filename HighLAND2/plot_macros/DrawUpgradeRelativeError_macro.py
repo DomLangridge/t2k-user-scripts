@@ -4,37 +4,39 @@ import argparse
 # ==================== Arguments ====================
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", "--input", type=str)
-parser.add_argument("-o", "--output", type=str)
+parser.add_argument("-i", "--input", type=str)  # input (either combined magnet and sand file, or just magnet)
+parser.add_argument("-s", "--sand", type=str)   # sand input, if wanting magnet and sand separate
+parser.add_argument("-o", "--output", type=str) # output base name
 args = parser.parse_args()
+
+if args.input is None:
+  print("ERROR: No input argument provided")
+  print("       Run as: python DrawUpgradeRelativeError -i <input_file> (-s <separate_sand_file> -o <output_file_basename>)")
+  exit(1)
+
+if args.output is not None:
+  outNameBase = args.output
+else:
+  outNameBase = "blarb"
 
 # ==================== Set Up ====================
 
-# Read input and output names if provided
-if args.input is None:
-  print("ERROR: No input argument provided")
-  print("       Run as: python DrawUpgradeRelativeError -i <input_file_name> (-i <output_file_basename>)")
-  exit(1)
-else:
-  name = args.input
+# Drawing tools
+draw = ROOT.DrawingTools(args.input)
 
-if args.output is None:
-  outNameBase = "blarb"
-else:
-  outNameBase = args.output
-
-# Set up Drawing tools & samples
-mc      = ROOT.DataSample(name)
-draw    = ROOT.DrawingTools(name)
-
-# Set up experiment and runs
+# Experiment and runs
 exper = ROOT.Experiment("nd280")
-
 run13 = ROOT.SampleGroup("run13")
-run13.AddMCSample("magnet", mc);  
-run13.AddDataSample(mc);
 
-exper.AddSampleGroup("run13", run13);
+# MC
+mc = ROOT.DataSample(args.input)
+run13.AddMCSample("magnet", mc);
+
+if args.sand is not None:
+  sand_mc = Root.DataSample(args.sand)
+  run13.AddMCSample("sand", sand_mc);
+
+run13.AddDataSample(mc);
 
 # Options
 saveCanvasAsC = False

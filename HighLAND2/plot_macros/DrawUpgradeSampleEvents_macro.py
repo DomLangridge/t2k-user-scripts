@@ -1,22 +1,42 @@
 import ROOT
+import argparse
+
+# ==================== Arguments ====================
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i", "--input", type=str)  # input (either combined magnet and sand file, or just magnet)
+parser.add_argument("-s", "--sand", type=str)   # sand input, if wanting magnet and sand separate
+parser.add_argument("-o", "--output", type=str) # output base name
+args = parser.parse_args()
+
+if args.input is None:
+  print("ERROR: No input argument provided")
+  print("       Run as: python DrawUpgradeRelativeError -i <input_file> (-s <separate_sand_file> -o <output_file_basename>)")
+  exit(1)
+
+if args.output is not None:
+  outNameBase = args.output
+else:
+  outNameBase = "blarb"
 
 # ==================== Set Up ====================
 
-# Set up Drawing tools & samples
-name = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/Output_UpgradeNumuCCAnalysis_neut_HL5.27.1.root"
-mc      = ROOT.DataSample(name)
-sand_mc 	= ROOT.DataSample("/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/Output_UpgradeNumuCCAnalysis_sand_HL5.27.1.root")
-draw    = ROOT.DrawingTools(name)
+# Drawing tools
+draw = ROOT.DrawingTools(args.input)
 
-# Set up experiment and runs
+# Experiment and runs
 exper = ROOT.Experiment("nd280")
-
 run13 = ROOT.SampleGroup("run13")
-run13.AddMCSample("magnet", mc);  
-run13.AddMCSample("sand", sand_mc);
-run13.AddDataSample(mc);
 
-exper.AddSampleGroup("run13", run13);
+# MC
+mc = ROOT.DataSample(args.input)
+run13.AddMCSample("magnet", mc);
+
+if args.sand is not None:
+  sand_mc = Root.DataSample(args.sand)
+  run13.AddMCSample("sand", sand_mc);
+
+run13.AddDataSample(mc);
 
 # Options
 saveCanvasAsC = False
@@ -91,7 +111,7 @@ VarName = ["selmu_mom", "selmu_direction2"]
 BinDef = [
   [ [100,0,5000], [100,-1,1] ], # TPCmu
   [ [100,0,5000], [100,-1,1] ], # HATmu
-  [ [20,0,1000], [100,-1,1] ] # SFGmu
+  [ [120,0,600], [100,-1,1] ] # SFGmu
 
 ]
 
@@ -111,6 +131,6 @@ for s,Sample in enumerate(SampleName):
 
 # Make plots
 
-PlotEventRate(SampleName, AccumBranch, VarName, BinDef, "UpgradeNumuCCSelection_PlotEventRate")
+PlotEventRate(SampleName, AccumBranch, VarName, BinDef, outNameBase+"_PlotEventRate")
 
-PlotEventRate2D(SampleName, AccumBranch, VarName, BinDef, "UpgradeNumuCCSelection_PlotEventRate2D")
+PlotEventRate2D(SampleName, AccumBranch, VarName, BinDef, outNameBase+"_PlotEventRate2D")
