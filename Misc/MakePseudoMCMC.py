@@ -27,10 +27,6 @@ if __name__ == "__main__":
   saveCanvasAsC = False
   pdf_nbins = [50, 30, 25] 
   plot2DPDFs = False
-  
-  # Step settings
-  n_steps = 10000
-  step_size = 2.38 # Ideal step size for single parameter
 
   # Param settings
     # [name, min, max]
@@ -42,8 +38,22 @@ if __name__ == "__main__":
   ]
 
   # LH settings (currently just three arbitrary 1D Guassians)
-  LH_mean = [0, -1.5, 3]
-  LH_stdev = [1, 2, 0.5]
+  LH_mean = [
+    0,
+    -1.5,
+    3
+  ]
+  LH_stdev = [
+    1,
+    2,
+    0.5
+  ]
+
+  # Step settings
+  n_steps = 10000
+  step_size = 2.38/np.sqrt(len(parameter))
+    # From chat w/ Henry: Ideal step size is to scale the covariance matrix variance by (2.38^2)/#parameters
+    #                     This is standard dev not variance, so 2.38/sqrt(#parameters)
 
   # ====================
 
@@ -52,7 +62,10 @@ if __name__ == "__main__":
   for p in range(len(parameter)):
     par_val[p] = [np.random.uniform(parameter[p][1],parameter[p][2])]
   
-  print("Starting from initial position ",par_val) # DL Debug
+  print("")
+  print("Starting from initial position ",par_val)
+  print("Using step size ",step_size)
+  print("")
 
   # Counters
   accCount = 0
@@ -89,8 +102,10 @@ if __name__ == "__main__":
     accRate.append(accCount/(i+1))
 
   # End MCMC
+  print("")
   print("Finished MCMC :)")
   print("Total Acceptance Rate = ",(accCount/n_steps)," (",accCount,"/",n_steps,")")
+  print("")
 
   canvas = ROOT.TCanvas()
 
