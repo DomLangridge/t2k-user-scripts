@@ -37,6 +37,7 @@ if args.sand is not None:
   run13.AddMCSample("sand", sand_mc);
 
 run13.AddDataSample(mc);
+exper.AddSampleGroup("run13", run13);
 
 # Options
 saveCanvasAsC = False
