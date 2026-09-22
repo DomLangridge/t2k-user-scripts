@@ -26,7 +26,7 @@ if __name__ == "__main__":
   # General
   saveCanvasAsC = False
   pdf_nbins = [50, 30, 25] 
-  plot2DPDFs = True
+  plot2DPDFs = False
   
   # Step settings
   n_steps = 10000
