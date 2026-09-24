@@ -4,8 +4,6 @@ import ROOT
 
 # To Do
 # - Add more parameters (increase to 10 maybe?)
-# - Start parameters outside of good LLH range (and use low n_steps, ~200) to get good trace plots
-#   - Compare to plots in Kirsty's thesis (they're very good examples)
 # - Add a way to handle crossing parameter boundaries maybe?
 
 # Combination of 1D Gaussian Likelihoods
@@ -33,7 +31,7 @@ if __name__ == "__main__":
   saveCanvasAsC = True
   pdf_nbins = [50, 50, 50] 
   plot2DPDFs = False
-  nAccRateBatches = 20
+  nAccRateBatches = 10
 
   RandomStart = False
   RandomLH = False
@@ -62,7 +60,7 @@ if __name__ == "__main__":
   ]
 
   # Step settings
-  n_steps = 100000
+  n_steps = 1000
   step_size = 2.38/np.sqrt(len(parameter))
     # From chat w/ Henry: Ideal step size is to scale the covariance matrix variance by (2.38^2)/#parameters
     #                     This is standard dev not variance, so 2.38/sqrt(#parameters)
