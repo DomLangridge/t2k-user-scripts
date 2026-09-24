@@ -31,7 +31,7 @@ if __name__ == "__main__":
   saveCanvasAsC = True
   pdf_nbins = [50, 50, 50] 
   plot2DPDFs = False
-  nAccRateBatches = 10
+  nAccRateBatches = 20
 
   RandomStart = False
   RandomLH = False
@@ -60,7 +60,7 @@ if __name__ == "__main__":
   ]
 
   # Step settings
-  n_steps = 1000
+  n_steps = 10000
   step_size = 2.38/np.sqrt(len(parameter))
     # From chat w/ Henry: Ideal step size is to scale the covariance matrix variance by (2.38^2)/#parameters
     #                     This is standard dev not variance, so 2.38/sqrt(#parameters)
