@@ -14,7 +14,8 @@ def GetLH(x, mean, stdev):
   if type(mean) is not list: mean = [mean]
   if type(stdev) is not list: stdev = [stdev]
 
-  # Calculate 1D likelihoods
+  # Calculate 1D likelihood product
+  
   Likelihood = 1.
   for i in range(len(x)):
     Likelihood = Likelihood * ( 1 / (stdev[i] * np.sqrt(2*math.pi) ) ) * np.exp(-1*( ((x[i]-mean[i])**2) / (2*(stdev[i]**2)) ) )
@@ -28,7 +29,7 @@ if __name__ == "__main__":
   # ===== Settings =====
 
   # General
-  saveCanvasAsC = True
+  saveCanvasAsC = False
   pdf_nbins = [50, 50, 50] 
   plot2DPDFs = False
   nAccRateBatches = 20
