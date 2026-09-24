@@ -63,7 +63,6 @@ if __name__ == "__main__":
 
   # Step settings
   n_steps = 100000
-  # step_size = 1.75
   step_size = 2.38/np.sqrt(len(parameter))
     # From chat w/ Henry: Ideal step size is to scale the covariance matrix variance by (2.38^2)/#parameters
     #                     This is standard dev not variance, so 2.38/sqrt(#parameters)
@@ -136,7 +135,6 @@ if __name__ == "__main__":
   print("")
 
   canvas = ROOT.TCanvas()
-  # gStyle.SetOptStat(0)
 
   # plot trace
 
@@ -149,12 +147,10 @@ if __name__ == "__main__":
 
     tracePlot.GetXaxis().SetTitle("Step")
     tracePlot.SetTitle("")
-    # tracePlot.GetYaxis().SetTitle(parameter[p][0]) # For testing
-    tracePlot.GetYaxis().SetTitle("Parameter Value") # for MaCh3 paper plots
+    tracePlot.GetYaxis().SetTitle(parameter[p][0])
 
     tracePlot.Draw()
 
-    canvas.SetLogx()
     canvas.Print('DummyTrace.pdf')
     if bool(saveCanvasAsC):
       canvas.Print('DummyTrace_'+parameter[p][0]+'.C')
@@ -229,7 +225,6 @@ if __name__ == "__main__":
     pdfPlot.Scale(1/n_steps)
 
     x = np.linspace(par_min,par_max,1000)
-    # targetDist = ROOT.TGraph(1000, x, GetLH(x, LH_mean[p], LH_stdev[p]))
     targetDist = ROOT.TGraph(1000, x, GetLH(x, LH_mean[p], LH_stdev[p]))
     targetDist.Draw("SAME")
 
