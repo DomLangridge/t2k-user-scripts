@@ -21,10 +21,7 @@ OAGenWeightsApps_DIR=$PWD
 HL_VERSION=5.27.1
 MODE=all
 
-# Flattree input and output directories
-# If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
-INPUT=/scratch/dlangrid/flattrees/HL5.27/Lists/FlatTreeList_${MODE}_HL5.27_converted_from_HL5.25.1.txt
-# INPUT=/scratch/dlangrid/flattrees/HL${HL_VERSION}/Lists/FlatTreeList_${MODE}_HL${HL_VERSION}_converted_from_HL5.25.1.txt
+INPUT=/scratch/dlangrid/flattrees/HL${HL_VERSION}/Lists/FlatTreeList_${MODE}_HL${HL_VERSION}_converted_from_HL5.25.1.txt
 
 SYST=(
   "BFieldDist"          # 0
@@ -77,7 +74,6 @@ echo "Printing modded parameter file: $PARAMETER_TEMP"
 echo "=================================================="
 echo "$(<$PARAMETER_TEMP)"
 echo "=================================================="
-echo "    Parameter modded file:  $PARAMETER_TEMP"
 
 if [ -f $OUTPUT ]; then
   echo "WARNING: '$OUTPUT' already exists -> removing before running"
