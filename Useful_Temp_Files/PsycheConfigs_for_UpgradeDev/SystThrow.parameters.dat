@@ -1,0 +1,26 @@
+< baseAnalysis.NIWGWeighting.Enable = 1 >
+< baseAnalysis.Weights.EnableNIWG  = 1 >
+
+< baseAnalysis.Systematics.NumberOfToys = 500 >
+
+< baseAnalysis.Configurations.EnableSingleVariationSystConfigurations = 1 >
+< baseAnalysis.Configurations.EnableSingleWeightSystConfigurations  = 0 >
+
+< baseUpgradeAnalysis.Systematics.CorrelationsFile = /data/Prod8/Correlations/correlations_pre_postup_corr.xml >
+
+< baseAnalysis.Configurations.EnableAllSystematics = 1 >
+< psycheSelections.upgradeNumuCCAnalysis.TrackSense.UseTOFInfo = 0 >
+< upgradeNumuCCAnalysis.MinAccumLevelToSave = 6 >
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---- VARIATIONS ----
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+< baseUpgradeAnalysis.Variations.EnableBFieldDist = 1 >
+< baseUpgradeAnalysis.Variations.EnableMomRes = 1 >
+< baseUpgradeAnalysis.Variations.EnableMomScale = 1 >
+< baseUpgradeAnalysis.Variations.EnableTPCPID = 1 >
+< baseUpgradeAnalysis.Variations.EnableHATPID = 1 >
+< baseUpgradeAnalysis.Variations.EnableToFResol = 1 >
+< baseUpgradeAnalysis.Variations.EnableMomBiasSfg = 1 >
+< baseUpgradeAnalysis.Variations.EnableSFGdEdxMVAMomResol = 1 >
