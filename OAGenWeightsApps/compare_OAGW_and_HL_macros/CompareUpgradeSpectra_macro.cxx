@@ -1,142 +1,4 @@
-// C++ Includes
-#include <vector>
-#include <iostream>
-
-// ROOT Includes (I doubt all of these are necessary...)
-#include "TAxis.h"
-#include "TFile.h"
-#include "TH2.h"
-#include "TH1.h"
-#include "TCanvas.h"
-#include "TError.h"
-
-
-///// Get TH2D hists from files
-TH2D* GetSpectra(std::vector<std::string> fileList, int sampleEnum, Int_t momNBins, Double_t* momBinEdges, Int_t thetaNBins, Double_t* thetaBinEdges) {
-
-  // Create Histogram
-  TH2D* hist = new TH2D("","", momNBins, momBinEdges, thetaNBins, thetaBinEdges);
-
-  bool printBinCheck = false;
-  uint nSelectedEvents = 0;
-
-  // Loop over files
-  for (std::string fileName : fileList) {
-    std::string fileType = "";
-
-    std::cout << "> Opening file: " << fileName.c_str() << std::endl;
-    TFile* file = TFile::Open(fileName.c_str());
-
-    // Check file type
-    if ((TTree*)file->Get("sample_sum")) {
-      std::cout << ">>> TTree 'sample_sum' exists: this must be an OAGenWeightsApps file!" << std::endl;
-      fileType = "OAGW";
-    } else if ((TTree*)file->Get("ana")) {
-      std::cout << ">>> TTree 'ana' exists: this must be a HighLAND file!" << std::endl;
-      fileType = "HL";
-    } else {
-      std::cout << "ERROR: neither 'sample_sum' or 'ana' were found - are you sure this is the right file?" << std::endl;
-      std::cout << ">>> Exiting..." << std::endl;
-      throw;
-    }
-
-    // For OAGW file
-    if (fileType == "OAGW") {
-      std::cout << ">> Filling with events from sample_sum..." << std::endl;
-
-      TTree* tree = (TTree*)file->Get("sample_sum");
-      TTree* flattree = (TTree*)file->Get("flattree");
-
-      Double_t mom, theta;
-      Int_t sampleID, bunch;
-      Char_t isCIE;
-
-      tree->SetBranchStatus("*", false);
-      tree->SetBranchStatus("Pmu", true);
-      tree->SetBranchAddress("Pmu", &mom);
-      tree->SetBranchStatus("CosThetamu", true);
-      tree->SetBranchAddress("CosThetamu", &theta);
-      tree->SetBranchStatus("SelectedSample", true);
-      tree->SetBranchAddress("SelectedSample", &sampleID);
-      tree->SetBranchStatus("isConsecutiveIdenticalEvent", true);
-      tree->SetBranchAddress("isConsecutiveIdenticalEvent", &isCIE);
-
-      flattree = (TTree*)file->Get("flattree");
-      flattree->SetBranchStatus("*", false);
-      flattree->SetBranchStatus("Bunch", true);
-      flattree->SetBranchAddress("Bunch", &bunch);
-
-      Long64_t nEntries = tree->GetEntries();
-      for (Long64_t i = 0; i < nEntries; i++) {
-
-        tree->GetEntry(i);
-        flattree->GetEntry(i);
-
-        if ( (sampleID == sampleEnum) && (bunch >= 0) && (isCIE==0) ) {
-          hist->Fill(mom, theta);
-          nSelectedEvents++;
-        }
-      }
-
-    // For HL file
-    } else if (fileType == "HL") {
-      std::cout << ">> Filling with events from ana..." << std::endl;
-
-      TTree* tree = (TTree*)file->Get("ana");
-
-      Float_t mom, theta;
-      Int_t sampleID, accum_level;
-
-      tree->SetBranchStatus("*", false);
-      tree->SetBranchStatus("selmu_mom", true);
-      tree->SetBranchAddress("selmu_mom", &mom);
-      tree->SetBranchStatus("selmu_direction2", true);
-      tree->SetBranchAddress("selmu_direction2", &theta);
-      tree->SetBranchStatus("sample", true);
-      tree->SetBranchAddress("sample", &sampleID);
-      tree->SetBranchStatus("accum_level", true);
-      tree->SetBranchAddress("accum_level", &accum_level);
-
-      Long64_t nEntries = tree->GetEntries();
-      for (Long64_t i = 0; i < nEntries; i++) {
-
-        tree->GetEntry(i);
-
-        // if ( (sampleID == sampleEnum) && (accum_level >= 7) ) {
-        if (sampleID == sampleEnum) { // DL: accum_level is accounted for in selected sample it looks like :(
-          hist->Fill(mom, theta);
-          nSelectedEvents++;
-        }
-      }
-
-    } else {
-      std::cout << "fileType is not OAGW or HL - how the hell did you manage this?" << std::endl;
-      throw;
-    }
-  }
-
-  // Check for empty bins
-  if (printBinCheck) {
-    int nBins, nEmptyBins;
-    std::cout << ">>>>> Bin Check <<<<<" << std::endl;
-    // throw;
-    for (int biny = hist->GetNbinsY(); biny > 0; biny--) {
-      std::cout << biny << " {";
-      for (int binx = 1; binx < hist->GetNbinsX()+1; binx++) {
-        nBins++;
-        double nEventsInBin = hist->Integral(binx, binx, biny, biny);
-        std::cout << nEventsInBin << ", ";
-      } 
-      std::cout << "}" << std::endl;
-    }
-  }
-
-  std::cout << ">> min events in bin: " << hist->GetMinimum() << std::endl;
-  std::cout << ">> nSelectedEvents: " << nSelectedEvents << std::endl;
-
-  return hist;
-
-}
+#include "CompareOAGWandHL_utils.cxx"
 
 ///// *actual* main
 void CompareUpgradeSpectra_macro() {
@@ -168,14 +30,11 @@ void CompareUpgradeSpectra_macro() {
   std::vector<std::vector<std::vector<Double_t>>> sample_Binning = {
     // TPCmu
     { {0, 440, 640, 840, 1080, 1300, 1540, 1680, 1940, 2200, 2500, 2840, 3260, 3860, 4720, 30000}, // mom
-    // { {0, 440, 640, 840, 1080, 1300, 1540, 1680, 1940, 2200, 2500, 2840, 3260, 3860, 4720, 5000}, // mom
       {-1, 0.851, 0.8823, 0.9152, 0.943, 0.9585, 0.9716, 0.9823, 0.9905, 0.9949, 0.9987, 1} }, // theta
     // HATmu
     { {0, 280, 440, 600, 800, 960, 1160, 1520, 2120, 3120, 30000}, // mom
-    // { {0, 280, 440, 600, 800, 960, 1160, 1520, 2120, 3120, 5000}, // mom
       {-1, 0.4029, 0.4707, 0.5144, 0.5569, 0.5979, 0.6374, 0.6753, 0.7203, 0.7705, 0.8235, 0.8639, 0.8994, 0.9251, 0.9387, 0.9471, 0.9585, 1} }, // theta
     // SFGmu
-    // { {0, 220, 320, 30000}, // mom
     { {0, 220, 320, 1000}, // mom
       {-1, -0.8823, -0.666, -0.4144, -0.175, 0.0628, 0.2608, 0.4371, 0.5776, 0.7203, 0.8163, 0.9048, 0.9654, 1} } // theta
   };
@@ -251,8 +110,8 @@ void CompareUpgradeSpectra_macro() {
     // Get 2D spectra
     std::cout << std::endl;
     std::cout << "> Getting OAGW spectra" << std::endl;
-    TH2D* Hist_OAGW = GetSpectra(fileList_OAGW, sampleEnum[s], momNBins, momBinEdges, thetaNBins, thetaBinEdges);
-    std::cout << ">> Integral: " << Hist_OAGW->Integral() << std::endl;
+    TH2D* Hist_OAGW = GetSpectra2D(fileList_OAGW, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s]);
+    std::cout << "> Integral: " << Hist_OAGW->Integral() << std::endl;
 
     // Format 2D hist
     Hist_OAGW->SetTitle(sampleName[s].c_str());
@@ -288,8 +147,8 @@ void CompareUpgradeSpectra_macro() {
     // Get 2D spectra
     std::cout << std::endl;
     std::cout << "> Getting HL spectra" << std::endl;
-    TH2D* Hist_HL = GetSpectra(fileList_HL, sampleEnum[s], momNBins, momBinEdges, thetaNBins, thetaBinEdges);
-    std::cout << ">> Integral: " << Hist_HL->Integral() << std::endl;
+    TH2D* Hist_HL = GetSpectra2D(fileList_HL, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s]);
+    std::cout << "> Integral: " << Hist_HL->Integral() << std::endl;
 
     // Format 2D hist
     Hist_HL->SetTitle(sampleName[s].c_str());
@@ -330,8 +189,6 @@ void CompareUpgradeSpectra_macro() {
     for (uint binx = 1; binx < momNBins+1; binx++) {
       for (uint biny = 1; biny < thetaNBins+1; biny++) {
 
-        // Double_t nEventsInBinOAGW = Hist_OAGW->GetBinContent(binx, biny);
-        // Double_t nEventsInBinHL = Hist_HL->GetBinContent(binx, biny);
         Double_t nEventsInBinOAGW = Hist_OAGW->Integral(binx, binx, biny, biny);
         Double_t nEventsInBinHL = Hist_HL->Integral(binx, binx, biny, biny);
         Double_t binRatio = nEventsInBinOAGW / nEventsInBinHL;
