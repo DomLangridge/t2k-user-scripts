@@ -1,4 +1,35 @@
-#include "CompareOAGWandHL_utils.hxx"
+// c++ includes
+#include <iostream>
+#include <sstream>
+#include <cmath>
+
+// ROOT includes
+#include "TFile.h"
+#include "TH1.h"
+#include "TH2.h"
+#include "TAxis.h"
+#include "TTree.h"
+#include "TMath.h"
+
+
+// ============================== Misc ==============================
+
+void CheckBinContents2D(TH2D* hist, bool checkIntegral=false) {
+  std::cout << ">>>>> Bin Check <<<<<" << std::endl;
+
+  for (int biny = hist->GetNbinsY(); biny > 0; biny--) {
+    std::cout << biny << " {";
+
+    for (int binx = 1; binx < hist->GetNbinsX()+1; binx++) {
+      double contents;
+      if (checkIntegral) { contents = hist->Integral(binx, binx, biny, biny); }
+      else { contents = hist->GetBinContent(binx, biny); }
+      std::cout << contents << ", ";
+    } 
+
+    std::cout << "}" << std::endl;
+  }
+}
 
 
 // ============================== Relative Error ==============================
@@ -286,24 +317,4 @@ TH2D* GetSpectra2D(std::vector<std::string> fileList, Int_t momNBins, Double_t* 
 
   return hist;
 
-}
-
-
-// ============================== Misc ==============================
-
-void CheckBinContents2D(TH2D* hist, bool checkIntegral=false) {
-  std::cout << ">>>>> Bin Check <<<<<" << std::endl;
-
-  for (int biny = hist->GetNbinsY(); biny > 0; biny--) {
-    std::cout << biny << " {";
-
-    for (int binx = 1; binx < hist->GetNbinsX()+1; binx++) {
-      double contents;
-      if (checkIntegral) { contents = hist->Integral(binx, binx, biny, biny); }
-      else { contents = hist->GetBinContent(binx, biny); }
-      std::cout << contents << ", ";
-    } 
-
-    std::cout << "}" << std::endl;
-  }
 }
