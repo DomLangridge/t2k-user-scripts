@@ -108,6 +108,42 @@ TH2D* GetRelativeError2D(std::vector<std::string> fileList, Int_t momNBins, Doub
 }
 
 
+// ===== Get TH1D projection of TH2D relative error =====
+TH1D* GetRelativeErrorProjection(TH2D* hist_2d, Int_t nBins1D, Double_t* binEdges1D, std::string axis, std::string title="") {
+  std::cout << ">> Getting " << axis << " projection..." << std::endl;
+
+  // Check chosen axis of projection isn't nonsense
+  if (axis != "x" && axis != "y") {
+    std::cout << "ERROR: You have selected a 2D to 1D projection axis that isn't x or y - I can't believe you've done this" << std::endl;
+    throw;
+  }
+
+  // Create Histogram
+  TH1D* hist_1d = new TH1D(title.c_str(), title.c_str(), nBins1D, binEdges1D);
+
+  double totalVar[nBins1D];
+
+  // Get total variance per slice
+  for (int binx = 1; binx < hist_2d->GetNbinsX()+1; binx++) {
+    for (int biny = 1; biny < hist_2d->GetNbinsY()+1; biny++) {
+
+      double binVar = pow(hist_2d->GetBinContent(binx, biny), 2); // variance is square of relative error - is this the right maths here?
+
+      if (axis == "x") { totalVar[binx-1] += binVar; }
+      else if (axis == "y") { totalVar[biny-1] += binVar; }
+    }
+  }
+
+  // Fill 1D projection
+  for (int i = 0; i < nBins1D; i++) {
+    double totalRelativeError = TMath::Sqrt( totalVar[i] );
+    hist_1d->SetBinContent(i+1, totalRelativeError);
+  }
+
+  return hist_1d;
+}
+
+
 // ============================== Event Rates ==============================
 
 // ===== Fill TH2D event rates from OAGW spline file =====

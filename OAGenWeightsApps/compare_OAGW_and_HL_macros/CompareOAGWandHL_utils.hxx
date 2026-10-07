@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <cmath>
 
 #include "TFile.h"
 #include "TH1.h"
@@ -21,7 +22,11 @@ void FillRelativeError2D_FromHLAnalysis(TH2D* &hist, std::string fileName, int s
 
 
 // ===== Get TH2D relative error =====
-TH2D* GetRelativeError2D(std::vector<std::string> fileList, int sampleEnum, Int_t momNBins, Double_t* momBinEdges, Int_t thetaNBins, Double_t* thetaBinEdges, int covMatrixOffset);
+TH2D* GetRelativeError2D(std::vector<std::string> fileList, Int_t momNBins, Double_t* momBinEdges, Int_t thetaNBins, Double_t* thetaBinEdges, int sampleEnum=168, int covMatrixOffset=0);
+
+
+// ===== Get TH1D projection of TH2D relative error =====
+TH1D* GetRelativeErrorProjection(TH2D* hist_2d, Int_t nBins1D, Double_t* binEdges1D, std::string axis, std::string title);
 
 
 // ============================== Event Rates ==============================
@@ -39,7 +44,7 @@ void FillEvents2D_FromHLAnalysis(TH2D* &hist, TFile* file, int sampleEnum);
 
 
 // ===== Get TH2D event rates =====
-TH2D* GetSpectra2D(std::vector<std::string> fileList, int sampleEnum, Int_t momNBins, Double_t* momBinEdges, Int_t thetaNBins, Double_t* thetaBinEdges, int covMatrixOffset=0);
+TH2D* GetSpectra2D(std::vector<std::string> fileList, Int_t momNBins, Double_t* momBinEdges, Int_t thetaNBins, Double_t* thetaBinEdges, int sampleEnum=168, int covMatrixOffset=0);
 
 
 // ============================== Misc ==============================
