@@ -13,6 +13,7 @@ void CompareUpgradeSpectra_macro() {
   std::vector<std::string> fileList_OAGW = {
     "/scratch/dlangrid/UpgradeValidations/HL5.27.1/combineND280Splines/Output_combineND280Splines_beam_HL5.27.1.root",
     "/scratch/dlangrid/UpgradeValidations/HL5.27.1/combineND280Splines/Output_combineND280Splines_sand_HL5.27.1.root",
+    // "/scratch/dlangrid/UpgradeValidations/HL5.27.1/MakeND280Cov/NDCov_HL5.27.1_all_all.root" // DL: for checking ND Cov method vs. OAGW spline file method
   };
 
 
@@ -38,6 +39,9 @@ void CompareUpgradeSpectra_macro() {
     { {0, 220, 320, 1000}, // mom
       {-1, -0.8823, -0.666, -0.4144, -0.175, 0.0628, 0.2608, 0.4371, 0.5776, 0.7203, 0.8163, 0.9048, 0.9654, 1} } // theta
   };
+
+  // Just in case we want to look at an OAGW ND Cov file
+  int covMatrixOffset = 2; // DL: This works because diagonal of covariance of 1D representation of 2D kinematic binning etc etc
 
   // Define fine binning if plotting this instead of user-defined binning
   if (useFineBinning) {
@@ -110,7 +114,7 @@ void CompareUpgradeSpectra_macro() {
     // Get 2D spectra
     std::cout << std::endl;
     std::cout << "> Getting OAGW spectra" << std::endl;
-    TH2D* Hist_OAGW = GetSpectra2D(fileList_OAGW, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s]);
+    TH2D* Hist_OAGW = GetSpectra2D(fileList_OAGW, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
     std::cout << "> Integral: " << Hist_OAGW->Integral() << std::endl;
 
     // Format 2D hist
@@ -147,7 +151,7 @@ void CompareUpgradeSpectra_macro() {
     // Get 2D spectra
     std::cout << std::endl;
     std::cout << "> Getting HL spectra" << std::endl;
-    TH2D* Hist_HL = GetSpectra2D(fileList_HL, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s]);
+    TH2D* Hist_HL = GetSpectra2D(fileList_HL, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
     std::cout << "> Integral: " << Hist_HL->Integral() << std::endl;
 
     // Format 2D hist
@@ -264,6 +268,8 @@ void CompareUpgradeSpectra_macro() {
     if (saveCanvasAsC) canv_Comp->Print((outfileName+std::string("_Comp_OAGW_vs_HL")+sampleShortName[s]+("_theta.C")).c_str());
     canv_Comp->Clear();
 
+    // Increase offset of bins in Cov Matrix
+    covMatrixOffset += momNBins*thetaNBins;
   }
 
   // close pdfs

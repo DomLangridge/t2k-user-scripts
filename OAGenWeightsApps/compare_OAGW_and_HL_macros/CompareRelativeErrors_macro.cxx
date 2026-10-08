@@ -3,20 +3,23 @@
 ///// *actual* main
 void CompareRelativeErrors_macro() {
 
-  std::string outfileName = "RelativeErrorComparison_UpgradeSamples";
+  std::string outfileName = "RelativeErrorComparison_UpgradeSamples_TpcPid";
 
   // Options
   bool saveCanvasAsC = false;
 
-  // OAGW file list
-  std::vector<std::string> fileList_OAGW = {
-    "/scratch/dlangrid/UpgradeValidations/HL5.27.1/MakeND280Cov/BFieldDist/NDCov_HL5.27.1_BFieldDist_all_all.root",
-  };
+  // OAGW file
+  std::string fileName_OAGW = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/MakeND280Cov/NDCov_HL5.27.1_all_all.root";
+  // std::string fileName_OAGW = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/MakeND280Cov/BFieldDist/NDCov_HL5.27.1_BFieldDist_all_all.root";
+  // std::string fileName_OAGW = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/SystThrows/Output_UpgradeNumuCCAnalysis_BFieldDist_all_HL5.27.1.root";
+  // std::string fileName_OAGW = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/MakeND280Cov/TpcPid/NDCov_HL5.27.1_TpcPid_all_all.root";
 
-  // HL file list
-  std::vector<std::string> fileList_HL = {
-    "/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/SystThrows/Output_UpgradeNumuCCAnalysis_BFieldDist_all_HL5.27.1.root",
-  };
+  
+
+  // HL file
+  // std::string fileName_HL = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/SystThrows/Output_UpgradeNumuCCAnalysis_AllSysts_all_HL5.27.1.root";
+  // std::string fileName_HL = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/SystThrows/Output_UpgradeNumuCCAnalysis_BFieldDist_all_HL5.27.1.root";
+  std::string fileName_HL = "/scratch/dlangrid/UpgradeValidations/HL5.27.1/UpgradeNumuCCAnalysis/SystThrows/Output_UpgradeNumuCCAnalysis_TPCPID_all_HL5.27.1.root";
 
   // The single most godly method of writing sample binning you've ever seen: ( sampleBinning[Sample][Kinematic][Bin] )
   std::vector<int> sampleEnum = {168, 169, 170};
@@ -51,7 +54,12 @@ void CompareRelativeErrors_macro() {
   gStyle->SetLegendBorderSize(0);
 
   // Loop over samples
-  int covMatrixOffset = 2; // DL: This works because diagonal of covariance of 1D representation of 2D kinematic binning etc etc
+  // int covMatrixOffset = 2; // DL: This works because diagonal of covariance of 1D representation of 2D kinematic binning etc etc
+  int covMatrixOffset = 1; // 0th bin is always underflow
+
+  // Total relative syst error
+  std::vector<double> totalSystError_OAGW(sampleEnum.size(), 0);
+  std::vector<double> totalSystError_HL(sampleEnum.size(), 0);
 
   for (uint s=0; s < sampleEnum.size(); s++) {
     std::cout << std::endl;
@@ -68,10 +76,18 @@ void CompareRelativeErrors_macro() {
     
     // ===== OAGW =====
 
-    // Get 2D spectra
+    // Get 2D rel errors
     std::cout << std::endl;
-    std::cout << "> Getting OAGW spectra" << std::endl;
-    TH2D* Hist_OAGW = GetRelativeError2D(fileList_OAGW, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
+    std::cout << "> Getting OAGW rel errors" << std::endl;
+    TH2D* Hist_OAGW = GetRelativeError2D(fileName_OAGW, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
+    Hist_OAGW->Scale(100.); // DL: If HL rel error is a %
+    
+    // Calculate total systematic error
+    TH2D* nEvents_OAGW = GetSpectra2D(fileName_OAGW, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
+    TH2D* AbsError_OAGW = (TH2D*)Hist_OAGW->Clone();
+    AbsError_OAGW->Multiply(nEvents_OAGW); // Get absolute error
+    AbsError_OAGW->Multiply(AbsError_OAGW); // Get absolute variance
+    totalSystError_OAGW[s] = TMath::Sqrt( AbsError_OAGW->Integral() ) / nEvents_OAGW->Integral(); // Convert back to relative error
 
     // Format 2D hist
     Hist_OAGW->SetTitle(sampleName[s].c_str());
@@ -80,9 +96,9 @@ void CompareRelativeErrors_macro() {
     Hist_OAGW->SetZTitle("Relative Error");
     Hist_OAGW->GetZaxis()->SetRangeUser(0., Hist_OAGW->GetMaximum());
 
-    // Create 1D spectra
-    TH1D* Hist_OAGW_mom = GetRelativeErrorProjection(Hist_OAGW, momNBins, momBinEdges, "x", (sampleName[s]+" mom ").c_str());
-    TH1D* Hist_OAGW_theta = GetRelativeErrorProjection(Hist_OAGW, thetaNBins, thetaBinEdges, "y", (sampleName[s]+" costheta").c_str());
+    // Create 1D rel errors from 2D projection (requires 2D event spectra)
+    TH1D* Hist_OAGW_mom = GetRelativeErrorProjection(Hist_OAGW, nEvents_OAGW, momNBins, momBinEdges, "x", (sampleName[s]+" mom").c_str());
+    TH1D* Hist_OAGW_theta = GetRelativeErrorProjection(Hist_OAGW, nEvents_OAGW, thetaNBins, thetaBinEdges, "y", (sampleName[s]+" costheta").c_str());
 
     // Draw and save plots
     canv_OAGW->cd();
@@ -104,10 +120,17 @@ void CompareRelativeErrors_macro() {
     
     // ===== HL =====
 
-    // Get 2D spectra
+    // Get 2D rel errors
     std::cout << std::endl;
-    std::cout << "> Getting HL spectra" << std::endl;
-    TH2D* Hist_HL = GetRelativeError2D(fileList_HL, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
+    std::cout << "> Getting HL rel errors" << std::endl;
+    TH2D* Hist_HL = GetRelativeError2D(fileName_HL, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
+
+    // Calculate total systematic error
+    TH2D* nEvents_HL = GetSpectra2D(fileName_HL, momNBins, momBinEdges, thetaNBins, thetaBinEdges, sampleEnum[s], covMatrixOffset);
+    TH2D* AbsError_HL = (TH2D*)Hist_HL->Clone();
+    AbsError_HL->Multiply(nEvents_HL);
+    AbsError_HL->Multiply(AbsError_HL);
+    totalSystError_HL[s] = TMath::Sqrt( AbsError_HL->Integral() ) / nEvents_HL->Integral() ; // Convert back to relative error
 
     // Format 2D hist
     Hist_HL->SetTitle(sampleName[s].c_str());
@@ -116,9 +139,9 @@ void CompareRelativeErrors_macro() {
     Hist_HL->SetZTitle("Relative Error");
     Hist_HL->GetZaxis()->SetRangeUser(0., Hist_HL->GetMaximum());
 
-    // Create 1D spectra
-    TH1D* Hist_HL_mom = GetRelativeErrorProjection(Hist_HL, momNBins, momBinEdges, "x", (sampleName[s]+" mom").c_str());
-    TH1D* Hist_HL_theta = GetRelativeErrorProjection(Hist_HL, thetaNBins, thetaBinEdges, "y", (sampleName[s]+" costheta").c_str());
+    // Create 1D rel errors from HL drawing tools
+    TH1D* Hist_HL_mom = GetRelativeError1D(fileName_HL, momNBins, momBinEdges, "selmu_mom", sampleEnum[s]);
+    TH1D* Hist_HL_theta = GetRelativeError1D(fileName_HL, thetaNBins, thetaBinEdges, "selmu_direction2", sampleEnum[s]);
 
     // Draw and save plots
     canv_HL->cd();
@@ -179,13 +202,13 @@ void CompareRelativeErrors_macro() {
     // Create 1D ratios
     Hist_OAGW_mom->SetLineColor(kBlue);
     Hist_HL_mom->SetLineColor(kRed);
-    auto Ratio_mom = new TRatioPlot(Hist_OAGW_mom, Hist_HL_mom);
+    auto Ratio_mom = new TRatioPlot(Hist_OAGW_mom, Hist_HL_mom, "divsym");
     Ratio_mom->SetH1DrawOpt("HIST");
     Ratio_mom->SetH2DrawOpt("HIST");
 
     Hist_OAGW_theta->SetLineColor(kBlue);
     Hist_HL_theta->SetLineColor(kRed);
-    auto Ratio_theta = new TRatioPlot(Hist_OAGW_theta, Hist_HL_theta);
+    auto Ratio_theta = new TRatioPlot(Hist_OAGW_theta, Hist_HL_theta, "divsym");
     Ratio_theta->SetH1DrawOpt("HIST");
     Ratio_theta->SetH2DrawOpt("HIST");
 
@@ -198,11 +221,11 @@ void CompareRelativeErrors_macro() {
     canv_Comp->Clear();
 
     Ratio_mom->Draw("HIST");
-    TGraphAsymmErrors* Ratio_mom_errors = (TGraphAsymmErrors*)Ratio_mom->GetLowerRefGraph(); // set ratio y errors to 0
-    for (int n=0; n<Ratio_mom_errors->GetN(); n++) {
-      double binWidth = momBinEdges[n+1] - momBinEdges[n];
-      Ratio_mom_errors->SetPointError(n,binWidth/2,binWidth/2,0,0);
-    }
+    // TGraphAsymmErrors* Ratio_mom_errors = (TGraphAsymmErrors*)Ratio_mom->GetLowerRefGraph(); // set ratio y errors to 0
+    // for (int n=0; n<Ratio_mom_errors->GetN(); n++) {
+    //   double binWidth = momBinEdges[n+1] - momBinEdges[n];
+    //   Ratio_mom_errors->SetPointError(n,binWidth/2,binWidth/2,0.,0.); // breaks here
+    // }
     TLegend *legend_mom = new TLegend(0.4, 0.75, 0.6, 0.85);
     legend_mom->AddEntry(Hist_OAGW_mom, "OAGW", "l");
     legend_mom->AddEntry(Hist_HL_mom, "HL", "l");
@@ -212,11 +235,11 @@ void CompareRelativeErrors_macro() {
     canv_Comp->Clear();
 
     Ratio_theta->Draw("HIST");
-    TGraphAsymmErrors* Ratio_theta_errors = (TGraphAsymmErrors*)Ratio_theta->GetLowerRefGraph(); // set ratio y errors to 0
-    for (int n=0; n<Ratio_theta_errors->GetN(); n++) {
-      double binWidth = thetaBinEdges[n+1] - thetaBinEdges[n];
-      Ratio_theta_errors->SetPointError(n,binWidth/2,binWidth/2,0,0);
-    }
+    // TGraphAsymmErrors* Ratio_theta_errors = (TGraphAsymmErrors*)Ratio_theta->GetLowerRefGraph(); // set ratio y errors to 0
+    // for (int n=0; n<Ratio_theta_errors->GetN(); n++) {
+    //   double binWidth = thetaBinEdges[n+1] - thetaBinEdges[n];
+    //   Ratio_theta_errors->SetPointError(n,binWidth/2,binWidth/2,0,0); // breaks here
+    // }
     TLegend *legend_theta = new TLegend(0.4, 0.75, 0.6, 0.85);
     legend_theta->AddEntry(Hist_OAGW_theta, "OAGW", "l");
     legend_theta->AddEntry(Hist_HL_theta, "HL", "l");
@@ -233,6 +256,14 @@ void CompareRelativeErrors_macro() {
   canv_OAGW->Print((outfileName+std::string("_OAGW.pdf]")).c_str());
   canv_HL->Print((outfileName+std::string("_HL.pdf]")).c_str());
   canv_Comp->Print((outfileName+std::string("_Comp_OAGW_vs_HL.pdf]")).c_str());
+
+  // print total relative syst errors
+  std::cout << std::endl;
+  std::cout << "> Total Relative Systematic Errors (OAGW | HL)" << std::endl;
+  for (int s = 0; s < sampleEnum.size(); s++) {
+    std::cout << "  " << sampleShortName[s] << ":   " << totalSystError_OAGW[s] << "   |   " << totalSystError_HL[s] << std::endl;
+  }
+  std::cout << std::endl;
 
 }
 
