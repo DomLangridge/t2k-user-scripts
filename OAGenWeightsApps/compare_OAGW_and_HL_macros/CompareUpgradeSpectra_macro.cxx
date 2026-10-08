@@ -41,7 +41,7 @@ void CompareUpgradeSpectra_macro() {
   };
 
   // Just in case we want to look at an OAGW ND Cov file
-  int covMatrixOffset = 2; // DL: This works because diagonal of covariance of 1D representation of 2D kinematic binning etc etc
+  int covMatrixOffset = 1; // 0th bin is always underflow
 
   // Define fine binning if plotting this instead of user-defined binning
   if (useFineBinning) {
