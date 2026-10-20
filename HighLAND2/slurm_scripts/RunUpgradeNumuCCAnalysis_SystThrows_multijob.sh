@@ -2,8 +2,8 @@
 #SBATCH --account=def-blairt2k
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH --mem=16G
-#SBATCH --time=23:59:00
+#SBATCH --mem=32G
+#SBATCH --time=1-23:59:00
 #SBATCH --cpus-per-task=8
 #SBATCH --output=logs/%x/%x_%a.out
 #SBATCH --array=0-7
@@ -21,7 +21,10 @@ OAGenWeightsApps_DIR=$PWD
 HL_VERSION=5.27.1
 MODE=all
 
-INPUT=/scratch/dlangrid/flattrees/HL${HL_VERSION}/Lists/FlatTreeList_${MODE}_HL${HL_VERSION}_converted_from_HL5.25.1.txt
+# Flattree input and output directories
+# If you provide the path to an individual file in FLATTREE_DIR it will just run over that one file
+INPUT=/scratch/dlangrid/flattrees/HL5.27/Lists/FlatTreeList_${MODE}_HL5.27_converted_from_HL5.25.1.txt
+# INPUT=/scratch/dlangrid/flattrees/HL${HL_VERSION}/Lists/FlatTreeList_${MODE}_HL${HL_VERSION}_converted_from_HL5.25.1.txt
 
 SYST=(
   "BFieldDist"          # 0
@@ -74,6 +77,7 @@ echo "Printing modded parameter file: $PARAMETER_TEMP"
 echo "=================================================="
 echo "$(<$PARAMETER_TEMP)"
 echo "=================================================="
+echo "    Parameter modded file:  $PARAMETER_TEMP"
 
 if [ -f $OUTPUT ]; then
   echo "WARNING: '$OUTPUT' already exists -> removing before running"
