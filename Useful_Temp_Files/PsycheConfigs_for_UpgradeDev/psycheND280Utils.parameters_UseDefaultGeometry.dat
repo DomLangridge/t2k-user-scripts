@@ -20,14 +20,6 @@
  < psycheND280Utils.FluxWeighting.ApplyBanffWeights = 0 >
  < psycheND280Utils.FluxWeighting.BanffWeightsFile  = flux_nd_postfit_OAR11B_250-320kA >
 
- < psycheND280Utils.FluxWeighting.NomWeightFolder  = None >
- < psycheND280Utils.FluxWeighting.NomWeightFolderUpgrade = 25av1_nominal_23a_ratio >
- < psycheND280Utils.FluxWeighting.NomWeightVersion = None >
- < psycheND280Utils.FluxWeighting.NomWeightVersionUpgrade = 25a >
- < psycheND280Utils.FluxWeighting.NomWeightHist = None >
- < psycheND280Utils.FluxWeighting.NomWeightHistUpgrade = untuned_25a >
-
-
 
 ------- Proton SI -------
  
