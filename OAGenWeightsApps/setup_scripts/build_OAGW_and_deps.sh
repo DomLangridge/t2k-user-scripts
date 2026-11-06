@@ -9,8 +9,8 @@ export ROOT_DIR=$ROOTSYS
 # build options
 
 build_highland=true
-build_neut=false
-build_niwgrw=false
+build_neut=true
+build_niwgrw=true
 build_t2krw=true
 build_oagw=true
 
