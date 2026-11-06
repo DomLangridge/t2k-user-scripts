@@ -8,9 +8,9 @@ export ROOT_DIR=$ROOTSYS
 
 # build options
 
-build_neut=true
-build_niwgrw=true
 build_highland=true
+build_neut=false
+build_niwgrw=false
 build_t2krw=true
 build_oagw=true
 
@@ -21,8 +21,8 @@ build_clean=true
 OAGWDEPS_NEUT_VERSION=5.8.0
 OAGWDEPS_NIWGReWeight_VERSION=24.12
 OAGWDEPS_T2KReWeight_VERSION=24.12
-OAGWDEPS_HIGHLAND_VERSION=5.20
-OAGW_DIR_NAME="UpgradeDev"
+OAGWDEPS_HIGHLAND_VERSION=5.27.1
+OAGW_DIR_NAME="SFG_CCinc"
 
 export ND280PROD=prod8_V17
 
@@ -30,20 +30,32 @@ echo "--------------------------------------------------------------------------
 echo "Building OAGenWeights and dependencies for: OAGenWeightsApps_$OAGW_DIR_NAME"
 echo "-------------------------------------------------------------------------------------"
 echo "Version Control:"
+echo "  HighLAND2:  $OAGWDEPS_HIGHLAND_VERSION"
+echo "    ND280 Prod: $ND280PROD"
 echo "  NEUT:       $OAGWDEPS_NEUT_VERSION"
 echo "  NIWGRW:     $OAGWDEPS_NIWGReWeight_VERSION"
-echo "  HighLAND2:  $OAGWDEPS_HIGHLAND_VERSION"
 echo "  T2KRW:      $OAGWDEPS_T2KReWeight_VERSION"
 echo ""
-echo "  ND280 Prod: $ND280PROD"
+echo "Build settings:"
+echo "  HighLAND2:  $build_highland"
+echo "  NEUT:       $build_neut"
+echo "  NIWGRW:     $build_niwgrw"
+echo "  T2KRW:      $build_t2krw"
+echo "  OAGW:       $build_oagw"
 echo "-------------------------------------------------------------------------------------"
+
+# directory names (can be tweaked to have multiple of the same version)
+NEUT_DIRNAME=NEUT_${OAGWDEPS_NEUT_VERSION}
+NIWGRW_DIRNAME=NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}
+T2KRW_DIRNAME=T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}
+# HIGHLAND_DIRNAME=HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}
+HIGHLAND_DIRNAME=HighLAND2_SFG_CCinc
 
 # build directories (named for dependencies, except for OAGW)
 BUILD_DIR_NEUT=build
 BUILD_DIR_NIWGRW=build_with_NEUT${OAGWDEPS_NEUT_VERSION}
 BUILD_DIR_T2KRW=build_with_NIWGRW${OAGWDEPS_NIWGReWeight_VERSION}_NEUT${OAGWDEPS_NEUT_VERSION}_HL${OAGWDEPS_HIGHLAND_VERSION}
 BUILD_DIR_OAGW=build_HL${OAGWDEPS_HIGHLAND_VERSION}
-
 
 # ----- build -----
 
@@ -52,7 +64,7 @@ BUILD_DIR_OAGW=build_HL${OAGWDEPS_HIGHLAND_VERSION}
 unset CMAKE_PREFIX_PATH
 
 cd ${DL_SFT}/HighLAND2
-cd HighLAND2_${OAGWDEPS_HIGHLAND_VERSION}
+cd ${HIGHLAND_DIRNAME}
 
 export ND280_ROOT=$(pwd)
 export ND280_NJOBS=1
@@ -119,7 +131,7 @@ if [ $build_neut == "true" ]; then
   echo "Building NEUT"
   echo "========================================"
   cd ${DL_SFT}/NEUT
-  cd NEUT_${OAGWDEPS_NEUT_VERSION}
+  cd ${NEUT_DIRNAME}
   mkdir $BUILD_DIR_NEUT
   cd $BUILD_DIR_NEUT
   ../src/configure --prefix=$(readlink -f Linux) --enable-builtin-cernlib
@@ -132,7 +144,7 @@ fi
 
 # If this fails, check the neut github for install steps and troubleshooting
 
-source ${DL_SFT}/NEUT/NEUT_${OAGWDEPS_NEUT_VERSION}/$BUILD_DIR_NEUT/Linux/setup.sh
+source ${DL_SFT}/NEUT/${NEUT_DIRNAME}/$BUILD_DIR_NEUT/Linux/setup.sh
 
 
 # NIWGReWeight (NEUT dependency)
@@ -142,7 +154,7 @@ if [ $build_niwgrw == "true" ]; then
   echo "Building NIWGReWeight"
   echo "========================================"
   cd ${DL_SFT}/NIWGReWeight
-  cd NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}
+  cd ${NIWGRW_DIRNAME}
   mkdir $BUILD_DIR_NIWGRW
   cd $BUILD_DIR_NIWGRW
   cmake ../
@@ -153,7 +165,7 @@ if [ $build_niwgrw == "true" ]; then
   make install
 fi
 
-source ${DL_SFT}/NIWGReWeight/NIWGReWeight_${OAGWDEPS_NIWGReWeight_VERSION}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
+source ${DL_SFT}/NIWGReWeight/${NIWGRW_DIRNAME}/$BUILD_DIR_NIWGRW/Linux/bin/setup.NIWG.sh
 
 
 # T2KReWeight (NIWGReWeight [NEUT] & HighLAND2 dependency)
@@ -163,7 +175,7 @@ if [ $build_t2krw == "true" ]; then
   echo "Building T2KReWeight"
   echo "========================================"
   cd ${DL_SFT}/T2KReWeight
-  cd T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}
+  cd ${T2KRW_DIRNAME}
   mkdir $BUILD_DIR_T2KRW
   cd $BUILD_DIR_T2KRW
   cmake ../
@@ -174,7 +186,7 @@ if [ $build_t2krw == "true" ]; then
   make install
 fi
 
-source ${DL_SFT}/T2KReWeight/T2KReWeight_${OAGWDEPS_T2KReWeight_VERSION}/$BUILD_DIR_T2KRW/Linux/bin/setup.T2K.sh
+source ${DL_SFT}/T2KReWeight/${T2KRW_DIRNAME}/$BUILD_DIR_T2KRW/Linux/bin/setup.T2K.sh
 
 
 # OAGenWeightsApps (T2KReWeight [NIWGReWeight {NEUT} & HighLAND2] dependency)
