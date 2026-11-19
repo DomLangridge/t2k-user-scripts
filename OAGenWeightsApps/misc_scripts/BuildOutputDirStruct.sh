@@ -50,9 +50,6 @@ echo "making output directory struct for OAGW stuff in this directory: $StructRo
 
 for path in ${DIR_LIST[@]}; do
   echo "Making $StructRootDir/$path"
-  if [ -d $StructRootDir/$path ]; then
-    echo "  Path already exists -> skipping"
-  fi
   mkdir $path
 done
 
