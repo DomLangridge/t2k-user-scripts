@@ -1,25 +1,25 @@
 #!/bin/bash -l
 
 # Set ND spline paths - MAKE SURE THESE PATHS ARE CORRECT
-export MACH3_DATA=/home/dlangrid/scratch/Splines/Prod7E/v12_Highland_3.22.4/Data/
-export MACH3_MC=/home/dlangrid/scratch/Splines/Prod7E/v12_Highland_3.22.4/MC/
-export MACH3_SAND=/home/dlangrid/scratch/Splines/Prod7E/v12_Highland_3.22.4/Sand/
+export MACH3_DATA=
+export MACH3_MC=
+export MACH3_SAND=
 
 # Set MaCh3 paths - MAKE SURE THESE PATHS ARE CORRECT
-export MACH3_T2K=/home/dlangrid/MaCh3_T2K/MaCh3_OAR11B
-export MACH3_CORE=/home/dlangrid/MaCh3_Core/v1.5.0_patches
-
+export MACH3_T2K=$PWD
+export MACH3_CORE=
 
 # Reset important variables (required when sourcing script)
 unset T2K_BUILD_DIR
 unset CORE_BUILD_DIR
 unset OMP_NUM_THREADS
 unset INBUILT_CORE
+unset SOURCE_PSYCHE
 OPTIND=1
 
 # Script help function
 show_help() {
-    echo "Usage: $0 [-h] [-t <MaCh3_T2K_build_dir>] ([-c <MaCh3_Core_build_dir>] or [-b] to use in-built core) [-n <OMP_num_threads>]"
+    echo "Usage: $0 [-h] [-t <MaCh3_T2K_build_dir>] ([-c <MaCh3_Core_build_dir>] or [-b] to use in-built core) [-n <OMP_num_threads>] [-p]"
 }
 
 # Use argument options
@@ -27,7 +27,7 @@ show_help() {
 #   -t to set MaCh3 T2K build directory
 #   -c to set MaCh3 Core build directory
 #   -n to set number of OMP threads (use '-n 1' when running debug | use '-n unset' to unset variable)
-while getopts "ht:bc:n:" opt; do
+while getopts "ht:bc:n:p" opt; do
   case $opt in
     h) show_help; return 0
     ;;
@@ -39,17 +39,24 @@ while getopts "ht:bc:n:" opt; do
     ;;
     n)
       if [ $OPTARG == "unset" ]; then
-        unset OMP_NUM_THREADS; echo "- Unsetting OMP_NUM_THREADS"
+        unset OMP_NUM_THREADS; echo "- Unsetting OMP_NUM_THREADS -"
       elif [[ ! $OPTARG =~ ^[0-9]+$ ]]; then
         echo "  ERROR: Selected OMP_NUM_THREADS option is not an integer"; return 2
       else
-        export OMP_NUM_THREADS=$OPTARG; echo "- Setting OMP_NUM_THREADS="$OPTARG
+        export OMP_NUM_THREADS=$OPTARG; echo "- Setting OMP_NUM_THREADS="$OPTARG" -"
       fi
+    ;;
+    p) export SOURCE_PSYCHE=true
     ;;
     \?) show_help; return 1
     ;;
   esac
 done
+
+# Set SOURCE_PSYCHE to false if not set
+if test -z "$SOURCE_PSYCHE"; then
+  export SOURCE_PSYCHE=false
+fi
 
 # Set INBUILT_CORE to false if not set
 if test -z "$INBUILT_CORE"; then
@@ -59,16 +66,16 @@ fi
 # Use default number of threads if none set
 if test -z "$OMP_NUM_THREADS"; then
   export OMP_NUM_THREADS=8
-  echo "- No thread number chosen: using default "$OMP_NUM_THREADS" threads"
+  echo "- No thread number chosen: using default "$OMP_NUM_THREADS" threads -"
 fi
 
 # Use default t2k build directory if none set
 if test -z "$T2K_BUILD_DIR"; then
   # Edit below line to change default build directory
-  export T2K_BUILD_DIR=build_gpu
-  echo "- No MaCh3 T2K build directory chosen: using default "$T2K_BUILD_DIR
+  export T2K_BUILD_DIR=build
+  echo "- No MaCh3 T2K build directory chosen: using default "$T2K_BUILD_DIR" -"
 else
-  echo "- Using MaCh3 T2K build directory "$T2K_BUILD_DIR
+  echo "- Using MaCh3 T2K build directory "$T2K_BUILD_DIR" -"
 fi
 
 # Check if chosen t2k build directory exists
@@ -93,9 +100,9 @@ if ! $INBUILT_CORE; then
   if test -z "$CORE_BUILD_DIR"; then
     # Edit below line to change default build directory
     export CORE_BUILD_DIR=$T2K_BUILD_DIR
-    echo "- No MaCh3 Core build directory chosen: using same type as MaCh3 T2K ("$MACH3_CORE/$CORE_BUILD_DIR")"
+    echo "- No MaCh3 Core build directory chosen: using same as MaCh3 T2K ("$CORE_BUILD_DIR") -"
   else
-    echo "- Using MaCh3 Core build directory "$MACH3_CORE/$CORE_BUILD_DIR
+    echo "- Using MaCh3 Core build directory "$CORE_BUILD_DIR" -"
   fi
 
   # Check if chosen core build directory exists
@@ -123,15 +130,16 @@ else
   fi
 fi
 
-# Source psyche (optional)
-# cd ${MACH3_T2K}
-# cd psychestuff/nd280SoftwarePilot/
-# ./configure.sh
-# source nd280SoftwarePilot.profile
-# cd ../highland2SoftwarePilot
-# source highland2SoftwarePilot.profile
-# cd ../
-# source psycheMaster_*/Linux*/setup.sh
+# Source psyche if set
+if $SOURCE_PSYCHE; then
+  cd ${MACH3_T2K}/psychestuff/nd280SoftwarePilot/
+  ./configure.sh
+  source nd280SoftwarePilot.profile
+  cd ../highland2SoftwarePilot
+  source highland2SoftwarePilot.profile
+  cd ../
+  source psycheMaster_*/Linux*/setup.sh
+fi
 
 # Source MaCh3 and required dependencies
 if $INBUILT_CORE; then
