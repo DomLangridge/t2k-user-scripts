@@ -3,35 +3,41 @@
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH --mem=32G
-#SBATCH --time=1-12:00:00
+#SBATCH --time=12:00:00
 #SBATCH --cpus-per-task=8
-#SBATCH --gres=gpu:1
 #SBATCH --output=logs/%x/%x_%a.out
-#SBATCH --array=1
+#SBATCH --array=0
 #SBATCH --mail-user=dominic.langridge.2023@live.rhul.ac.uk
 #SBATCH --mail-type=END
 
+
+# DL: Add line '#SBATCH --gres=gpu:h100:1' to use GPU
+
 # DL:
 # ND280_X job script
-# Set up for Sigma Variation
-# Each array value will correspond to a different configuration
-# The setup arrays below allow for these different configurations
+# Set up for SigmaVar
 
 ##### CONFIG #####
 
 # General
 
-export MACH3_DIR=/home/dlangrid/MaCh3_T2K/MaCh3_OA2024
-ND280JOBTYPE=SigmaVar
-BASECONFIGFILE=${MACH3_DIR}/build/configs/p7_2024a_ND_Prefit.yaml
+export MACH3_DIR=$PWD
+BUILD_DIR_NAME=build_cpu
+
+CONFIG_FILE=${MACH3_DIR}/$BUILD_DIR_NAME/Configs/ND280_SFG_CCinc.yaml
+
+# DL: set YAML_OVERRIDE entry to 'false' if you don't want to provide one
+YAML_OVERRIDE=(
+  false
+)
 
 # Output
 
 OUTPUT_LABEL=(
-  "v12"
-  "v12_mirrored"
+  "SFG_CCinc_P8V17_Test"
 )
-OUTPUT_FILE=OAR11B_P7E_${OUTPUT_LABEL[$SLURM_ARRAY_TASK_ID]}_${ND280JOBTYPE}.root
+
+OUTPUT_FILE=/scratch/dlangrid/Outputs/MaCh3_SFG_CCinc/PreFit/SigmaVar/SigmaVar_${OUTPUT_LABEL[$SLURM_ARRAY_TASK_ID]}.root
 
 ##### RUN JOB #####
 
@@ -40,15 +46,13 @@ time -p {
 echo Job started at $HOSTNAME
 eval date
 
-source ${MACH3_DIR}/DLsetup.sh
-cd ${MACH3_DIR}/build
+source ${MACH3_DIR}/DLsetup.sh -t $BUILD_DIR_NAME -c $BUILD_DIR_NAME
+cd ${MACH3_DIR}/$BUILD_DIR_NAME
 
-JOB_CONFIG=tempConfig_${ND280JOBTYPE}_${SLURM_ARRAY_TASK_ID}.yaml
-cp $BASECONFIGFILE $JOB_CONFIG
-
-COMMAND="sed -i 's/<OUTPUT_FILE>/$OUTPUT_FILE/' $JOB_CONFIG"
-eval $COMMAND
-
-eval ./bin/ND280_$ND280JOBTYPE $JOB_CONFIG
+if [ "${YAML_OVERRIDE[$SLURM_ARRAY_TASK_ID]}" == false ]; then
+  SigmaVar ${CONFIG_FILE} General:OutputFile:\"${OUTPUT_FILE}\"
+else
+  SigmaVar ${CONFIG_FILE} General:OutputFile:\"${OUTPUT_FILE}\" ${YAML_OVERRIDE[$SLURM_ARRAY_TASK_ID]}
+fi
 
 }
