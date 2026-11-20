@@ -50,9 +50,9 @@ source ${MACH3_DIR}/DLsetup.sh -t $BUILD_DIR_NAME -c $BUILD_DIR_NAME
 cd ${MACH3_DIR}/$BUILD_DIR_NAME
 
 if [ "${YAML_OVERRIDE[$SLURM_ARRAY_TASK_ID]}" == false ]; then
-  SigmaVar ${CONFIG_FILE} General:OutputFile:\"${OUTPUT_FILE}\"
+  SigmaVar ${CONFIG_FILE} General:OutputFile:${OUTPUT_FILE}
 else
-  SigmaVar ${CONFIG_FILE} General:OutputFile:\"${OUTPUT_FILE}\" ${YAML_OVERRIDE[$SLURM_ARRAY_TASK_ID]}
+  SigmaVar ${CONFIG_FILE} General:OutputFile:${OUTPUT_FILE} ${YAML_OVERRIDE[$SLURM_ARRAY_TASK_ID]}
 fi
 
 }
